@@ -1,5 +1,5 @@
 
-const separateCmdArgs = function(cmdArgs) {
+const separateCmdLineArgs = function(cmdArgs) {
   let cmdLineInputs = {
     option: 'n',
     count: 10,
@@ -29,5 +29,5 @@ const separateCmdArgs = function(cmdArgs) {
 }
 
 module.exports = {
-  separateCmdArgs
+  separateCmdLineArgs
 };

@@ -15,6 +15,6 @@
 */
 
 const {
-  separateCmdArgs } = require('./src/lib.js');
+  separateCmdLineArgs } = require('./src/lib.js');
 
 
