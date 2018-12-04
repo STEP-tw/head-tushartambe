@@ -14,5 +14,7 @@
   node ./head.js -c 5 file1 file2
 */
 
+const {
+  separateCmdArgs } = require('./src/lib.js');
 
 
