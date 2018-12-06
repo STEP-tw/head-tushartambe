@@ -260,3 +260,38 @@ describe('head with multiple files', function () {
   });
 });
 
+describe('head', function () {
+  describe('handle errors', function () {
+    it('should return error when invalid option is specified', function() {
+      let expectedOutput = 'head: illegal line count -- 0';
+      assert.deepEqual(head([,,"-n0","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+    });
+
+    it('should return error when -0 is given as count', function() {
+      let expectedOutput = 'head: illegal line count -- 0';
+      assert.deepEqual(head([,,"-0","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+    });
+
+    it('should return error when count is invalid', function() {
+      let expectedOutput = 'head: illegal line count -- -10';
+      assert.deepEqual(head([,,"-n-10","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+
+      expectedOutput = 'head: illegal byte count -- -10';
+      assert.deepEqual(head([,,"-c-10","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+    });
+
+    it('should return error when invalid option is speciified', function() {
+      let expectedOutput = 'head: illegal option -- z\nusage: head [-n lines | -c bytes] [file ...]' 
+      assert.deepEqual(head([,,"-z","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+    });
+
+    it('should return the error message when -n or -c and then alphanumeric combination is given ', function () {
+      let expectedOutput = 'head: illegal line count -- u922';
+      assert.deepEqual(head(['','',"-nu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
+
+      expectedOutput = 'head: illegal byte count -- u922';
+      assert.deepEqual(head(['','',"-cu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
+    });
+
+  });
+});

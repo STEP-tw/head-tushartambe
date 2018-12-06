@@ -63,10 +63,25 @@ const readFile = function(organizedData,fileReader) {
   return contentsWithFileName.join("\n");
 }
 
+const isExists = function(file, isFileExists) {
+  return isFileExists(file);
+}
 const head = function(headData,fileReader,isFileExists) {
   let organizedData = separateCmdLineArgs(headData);
   let readerSelector = { 'c':getBytes,'n':getLines }
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
+  
+  if( headData[2] == 0 || organizedData.count == 0 ){
+    return 'head: illegal line count -- 0'
+  }
+  
+  if(headData[2][0]=='-' && headData[2][1] !='n' && headData[2][1] != 'c' && !parseInt(headData[2])){
+    return 'head: illegal option -- '+headData[2][1]+'\nusage: head [-n lines | -c bytes] [file ...]'
+  }
+  
+  if(isNaN(organizedData.count-0) ||organizedData.count < 1) {
+    return (organizedData.option == 'n') ? 'head: illegal line count -- ' + headData[2].slice(2) : 'head: illegal byte count -- ' + headData[2].slice(2);
+  }
 
   return readFile(organizedData,fileReader);
 }
