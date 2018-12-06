@@ -1,6 +1,8 @@
 const assert = require('assert');
 const {
-  separateCmdLineArgs } = require('../src/lib.js');
+  separateCmdLineArgs,
+  getBytes,
+  getLines } = require('../src/lib.js');
 
 describe('separateCmdLineArgs', function () {
   describe('for separate-on option and count is not given', function () {
@@ -15,7 +17,7 @@ describe('separateCmdLineArgs', function () {
 
   describe('for separate-on option is not given and count is given', function () {
     it('should separate all arguments and give default option -n and count as given', function () {
-     let givenCmdLineArgs = [ '/usr/local/bin/node',
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
         '/Users/tmtushar/Projects/ownHeadCommand/head.js',
         '-19',
         'file.txt' ];
@@ -68,3 +70,55 @@ describe('separateCmdLineArgs', function () {
   });
 });
 
+
+describe('getBytes', function () {
+  describe('for empty contents and any count value', function () {
+    it('should return empty value',function () {
+      assert.deepEqual(getBytes(4,''),'');
+    });
+  });
+
+  describe('for 0 count value', function () {
+    it('should empty value', function () {
+      assert.deepEqual(getBytes(0,'line 1\nline 2\nline 3\nline 4\nline 5\nline'),'');
+    });
+  });
+
+  describe('for count value greater than total string characters', function () {
+    it('should return whole string ', function () {
+      assert.deepEqual(getBytes(20,'line 1\nline'),'line 1\nline');
+    });
+  });
+
+  describe('for count value less than total string characters', function () {
+    it('should return same number of characters as count', function () {
+      assert.deepEqual(getBytes(8,'line 1\nline'),'line 1\nl');
+    });
+  });
+});
+
+describe('getLines', function () {
+  describe('for empty contents and any count value', function () {
+    it('should return empty value',function () {
+      assert.deepEqual(getLines(4,''),'');
+    });
+  });
+
+  describe('for 0 count value', function () {
+    it('should empty value', function () {
+      assert.deepEqual(getLines(0,'line 1\nline 2\nline 3\nline 4\nline 5\nline'),'');
+    });
+  });
+
+  describe('for count value greater than total lines', function () {
+    it('should return whole string ', function () {
+      assert.deepEqual(getLines(20,'line 1\nline'),'line 1\nline');
+    });
+  });
+
+  describe('for count value less than total lines', function () {
+    it('should return same number of lines as count', function () {
+      assert.deepEqual(getLines(5,'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8'),'line 1\nline 2\nline 3\nline 4\nline 5');
+    });
+  });
+});

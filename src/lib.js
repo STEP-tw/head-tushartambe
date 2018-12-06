@@ -1,4 +1,3 @@
-
 const separateCmdLineArgs = function(cmdArgs) {
   let cmdLineInputs = {
     option: 'n',
@@ -28,6 +27,19 @@ const separateCmdLineArgs = function(cmdArgs) {
   return cmdLineInputs;
 }
 
+const getBytes = function(count,contents) {
+    return contents.split("").slice(0,count).join("");
+}
+
+const getLines = function(count,contents) {
+    return contents.split("\n").slice(0,count).join("\n");
+}
+
+const head = function(headData,fileReader,isFileExists) {
+
+}
+
 module.exports = {
-  separateCmdLineArgs
-};
+  separateCmdLineArgs,
+  getBytes,
+  getLines };

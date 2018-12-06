@@ -14,17 +14,10 @@
   node ./head.js -c 5 file1 file2
 */
 const fs = require('fs');
+const { readFileSync, existsSync } = fs;
 
-const {
-  separateCmdLineArgs } = require('./src/lib.js');
-
-const readFileContents = function(fileName) {
-  return fs.readFileSync(fileName,'utf8');
+const main = function(usrInputs) {
+  console.log(head(usrInputs,readFileSync, existsSync))
 }
 
-const readFilesAndInputs = function(cmdArgs) {
-  cmdLineInputs = seperateCmdArgs(cmdArgs);
-  cmdLineInputs.fileContents = cmdLineInputs['files'].map(readFileContents);
-
-  return cmdLineInputs;
-}
+main(process.argv);
