@@ -35,11 +35,26 @@ const getLines = function(count,contents) {
     return contents.split("\n").slice(0,count).join("\n");
 }
 
-const head = function(headData,fileReader,isFileExists) {
+const readFile = function(organizedData,fileReader,isFileExists) {
+  if(isFileExists(organizedData.files[0])) {
+    let fileContents = fileReader(organizedData.files[0],'utf8');
+    return organizedData['readerSelector'](organizedData.count,fileContents);
+  }
+}
 
+const head = function(headData,fileReader,isFileExists) {
+  let organizedData = separateCmdLineArgs(headData);
+  let readerSelector = { 'c':getBytes,'n':getLines }
+  organizedData['readerSelector'] = readerSelector[organizedData['option']];
+
+  if(organizedData['files'].length < 2) {
+    return readFile(organizedData,fileReader,isFileExists);
+  }
 }
 
 module.exports = {
   separateCmdLineArgs,
   getBytes,
-  getLines };
+  getLines,
+  readFile,
+  head};

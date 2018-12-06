@@ -2,7 +2,9 @@ const assert = require('assert');
 const {
   separateCmdLineArgs,
   getBytes,
-  getLines } = require('../src/lib.js');
+  getLines,
+  readFile,
+  head } = require('../src/lib.js');
 
 describe('separateCmdLineArgs', function () {
   describe('for separate-on option and count is not given', function () {
@@ -53,7 +55,6 @@ describe('separateCmdLineArgs', function () {
         'file.txt' ];
       let separatedArgs = { option: 'c', count: '8', files: [ 'file.txt' ] };
       assert.deepEqual(separateCmdLineArgs(givenCmdLineArgs),separatedArgs);
-
     });
   });
 
@@ -119,6 +120,66 @@ describe('getLines', function () {
   describe('for count value less than total lines', function () {
     it('should return same number of lines as count', function () {
       assert.deepEqual(getLines(5,'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8'),'line 1\nline 2\nline 3\nline 4\nline 5');
+    });
+  });
+});
+
+const fileReaderIdentity = function( file ) {
+  return 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\n';
+}
+
+const isFileExists = function(file) {
+  return true;
+}
+describe('head', function () {
+  describe('for separate-on option and count is not given', function () {
+    it('should return first 10 lines of file',function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        'file' ];
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10');
+    });
+  });
+
+  describe('for separate-on option is not given and count is given', function () {
+    it('should return first given number of lines', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-5',
+        'file' ];
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5');
+    });
+  });
+
+  describe('for separate-on option is given and count is given with it', function () {
+    it('should return given number of lines/characters as per option', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-n9',
+        'file' ];
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9');
+
+      givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-c8',
+        'file' ];
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nl');
+    });
+  });
+
+  describe('for separate-on option is given and count is given separately', function () {
+    it('should return given number of lines/characters as per option', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-n9',
+        'file' ];
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9');
+      givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-c',
+        '8',
+        'file' ];
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nl');
     });
   });
 });
