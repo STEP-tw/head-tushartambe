@@ -6,6 +6,18 @@ const {
   readFile,
   head } = require('../src/lib.js');
 
+const multipleFileReader = function( file ) {
+  return 'line1\nline2\nline3\nline4\nline5';
+}
+
+const fileReaderIdentity = function( file ) {
+  return 'line 1\nline 2\nline 3\nline 4\nline 5';
+}
+
+const isFileExists = function(file) {
+  return true;
+}
+
 describe('separateCmdLineArgs', function () {
   describe('for separate-on option and count is not given', function () {
     it('should separate all arguments and give default option -n and count 10', function () {
@@ -71,7 +83,6 @@ describe('separateCmdLineArgs', function () {
   });
 });
 
-
 describe('getBytes', function () {
   describe('for empty contents and any count value', function () {
     it('should return empty value',function () {
@@ -124,20 +135,14 @@ describe('getLines', function () {
   });
 });
 
-const fileReaderIdentity = function( file ) {
-  return 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\n';
-}
 
-const isFileExists = function(file) {
-  return true;
-}
-describe('head', function () {
+describe('head with single file', function () {
   describe('for separate-on option and count is not given', function () {
     it('should return first 10 lines of file',function () {
       let givenCmdLineArgs = [ '/usr/local/bin/node',
         '/Users/tmtushar/Projects/ownHeadCommand/head.js',
         'file' ];
-      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10');
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5');
     });
   });
 
@@ -157,7 +162,7 @@ describe('head', function () {
         '/Users/tmtushar/Projects/ownHeadCommand/head.js',
         '-n9',
         'file' ];
-      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9');
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5');
 
       givenCmdLineArgs = [ '/usr/local/bin/node',
         '/Users/tmtushar/Projects/ownHeadCommand/head.js',
@@ -173,7 +178,8 @@ describe('head', function () {
         '/Users/tmtushar/Projects/ownHeadCommand/head.js',
         '-n9',
         'file' ];
-      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9');
+      assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5');
+
       givenCmdLineArgs = [ '/usr/local/bin/node',
         '/Users/tmtushar/Projects/ownHeadCommand/head.js',
         '-c',
@@ -183,3 +189,74 @@ describe('head', function () {
     });
   });
 });
+
+describe('head with multiple files', function () {
+  describe('for separate-on option and count is not given', function () {
+    it('should return first 10 lines of each file',function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        'file1',
+        'file1'];
+      let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n\n==> file1 <==\nline1\nline2\nline3\nline4\nline5';
+      assert.deepEqual(head(givenCmdLineArgs,multipleFileReader,isFileExists),output);
+    });
+  });
+
+  describe('for separate-on option is not given and count is given', function () {
+    it('should return first given number of lines of each file', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-3',
+        'file1',
+        'file1'];
+      let output = '==> file1 <==\nline1\nline2\nline3\n\n==> file1 <==\nline1\nline2\nline3';
+      assert.deepEqual(head(givenCmdLineArgs,multipleFileReader,isFileExists),output);
+    });
+  });
+
+  describe('for separate-on option is given and count is given with it', function () {
+    it('should return given number of lines for -n option of each file', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-n3',
+        'file1',
+        'file1'];
+      let output = '==> file1 <==\nline1\nline2\nline3\n\n==> file1 <==\nline1\nline2\nline3';
+      assert.deepEqual(head(givenCmdLineArgs,multipleFileReader,isFileExists),output);
+    });
+    it('should return given number of characters for -c option of each file', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-c3',
+        'file1',
+        'file1'];
+      let output = '==> file1 <==\nlin\n\n==> file1 <==\nlin';
+      assert.deepEqual(head(givenCmdLineArgs,multipleFileReader,isFileExists),output);
+    });
+  });
+
+  describe('for separate-on option is given and count is given separately', function () {
+    it('should return give number of lines for -n option of each file', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-n',
+        '3',
+        'file1',
+        'file1'];
+      let output = '==> file1 <==\nline1\nline2\nline3\n\n==> file1 <==\nline1\nline2\nline3';
+      assert.deepEqual(head(givenCmdLineArgs,multipleFileReader,isFileExists),output);
+    });
+
+    it('should return given number of characters for -c option of each file', function () {
+      let givenCmdLineArgs = [ '/usr/local/bin/node',
+        '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+        '-c',
+        '3',
+        'file1',
+        'file1'];
+      let output = '==> file1 <==\nlin\n\n==> file1 <==\nlin';
+      assert.deepEqual(head(givenCmdLineArgs,multipleFileReader,isFileExists),output);
+    });
+  });
+});
+

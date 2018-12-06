@@ -28,18 +28,39 @@ const separateCmdLineArgs = function(cmdArgs) {
 }
 
 const getBytes = function(count,contents) {
-    return contents.split("").slice(0,count).join("");
+  return contents.split("").slice(0,count).join("");
 }
 
 const getLines = function(count,contents) {
-    return contents.split("\n").slice(0,count).join("\n");
+  return contents.split("\n").slice(0,count).join("\n");
 }
 
-const readFile = function(organizedData,fileReader,isFileExists) {
-  if(isFileExists(organizedData.files[0])) {
-    let fileContents = fileReader(organizedData.files[0],'utf8');
-    return organizedData['readerSelector'](organizedData.count,fileContents);
+const readFileContents = function(fileReader,fileName) {
+  return fileReader(fileName,'utf8');
+}
+
+const addFileNames = function(fileNames,fileContents) {
+  let formatedData =[];
+  let delimeter = "";
+  for(let counter = 0; counter < fileNames.length; counter++){
+    formatedData[counter] = delimeter+'==> '+fileNames[counter]+' <=='+'\n'+fileContents[counter];
+    delimeter = "\n";
   }
+  return formatedData;
+}
+
+const readFile = function(organizedData,fileReader) {
+  let readFiles = readFileContents.bind(null,fileReader);
+  let fileContents = organizedData['files'].map(readFiles);
+  
+  let optionSelector = organizedData['readerSelector'].bind(null,organizedData.count);
+  let requiredData = fileContents.map(optionSelector);
+  if(requiredData.length < 2) {
+    return requiredData.join("");
+  }
+
+  let contentsWithFileName = addFileNames(organizedData.files,requiredData);
+  return contentsWithFileName.join("\n");
 }
 
 const head = function(headData,fileReader,isFileExists) {
@@ -47,9 +68,7 @@ const head = function(headData,fileReader,isFileExists) {
   let readerSelector = { 'c':getBytes,'n':getLines }
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
-  if(organizedData['files'].length < 2) {
-    return readFile(organizedData,fileReader,isFileExists);
-  }
+  return readFile(organizedData,fileReader);
 }
 
 module.exports = {
@@ -57,4 +76,6 @@ module.exports = {
   getBytes,
   getLines,
   readFile,
-  head};
+  addFileNames,
+  readFileContents,
+  head };
