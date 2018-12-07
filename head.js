@@ -18,7 +18,8 @@ const isFileExists = require('fs').existsSync;
 const { head } = require('./src/lib.js');
 
 const main = function(usrInputs) {
-  console.log(head(usrInputs, fileReader, isFileExists))
+  let headData = usrInputs.slice(2);
+  console.log(head(headData, fileReader, isFileExists))
 }
 
 main(process.argv);

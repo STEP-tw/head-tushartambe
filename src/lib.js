@@ -5,22 +5,22 @@ const separateCmdLineArgs = function(cmdArgs) {
     files: []
   }
 
-  let options = cmdArgs[2].split("");
+  let options = cmdArgs[0].split("");
 
   if(options[0] == '-' && options.length > 2) {
     +options[1] && (cmdLineInputs.option = 'n' , cmdLineInputs.count = +options.slice(1).join(""));
     +options[1] || (cmdLineInputs.option = options[1] , cmdLineInputs.count = +options.slice(2).join("")) ;
 
-    cmdLineInputs.files = cmdArgs.slice(3);
+    cmdLineInputs.files = cmdArgs.slice(1);
   }
 
   if(options[0] == '-' && options.length == 2) {
-    +options[1] || (cmdLineInputs.option = options[1],cmdLineInputs.count = cmdArgs[3],cmdLineInputs.files = cmdArgs.slice(4));
-    +options[1] && (cmdLineInputs.option = 'n', cmdLineInputs.count =options[1], cmdLineInputs.files = cmdArgs.slice(3));
+    +options[1] || (cmdLineInputs.option = options[1],cmdLineInputs.count = cmdArgs[1],cmdLineInputs.files = cmdArgs.slice(2));
+    +options[1] && (cmdLineInputs.option = 'n', cmdLineInputs.count =options[1], cmdLineInputs.files = cmdArgs.slice(1));
   }
 
   if(!options.includes('-')){
-    cmdLineInputs.files = cmdArgs.slice(2);
+    cmdLineInputs.files = cmdArgs.slice(0);
     cmdLineInputs.option = 'n';
     cmdLineInputs.count = 10;
   }
@@ -71,17 +71,17 @@ const isInvalidCount = function(count) {
 const readFilesAndErrorHandler = function(headData,organizedData,fileReader,isFileExists) {
   let { option, count, files, readerSelector } = organizedData;
 
-  if( isZero(headData[2]) || isZero(count) ){
+  if( isZero(headData[0]) || isZero(count) ){
     return 'head: illegal line count -- 0'
   }
 
-  if(isInvalidOption(headData[2])){
-    let errorMsg = 'head: illegal option -- '+headData[2][1]+'\nusage: head [-n lines | -c bytes] [file ...]';
+  if(isInvalidOption(headData[0])){
+    let errorMsg = 'head: illegal option -- '+headData[0][1]+'\nusage: head [-n lines | -c bytes] [file ...]';
     return errorMsg;
   }
 
   if(isInvalidCount(count)) {
-    return (option == 'n') ? 'head: illegal line count -- '+headData[2].slice(2) : 'head: illegal byte count -- '+headData[2].slice(2);
+    return (option == 'n') ? 'head: illegal line count -- '+headData[0].slice(2) : 'head: illegal byte count -- '+headData[0].slice(2);
   }
 
   if(files.length == 1 ) {
