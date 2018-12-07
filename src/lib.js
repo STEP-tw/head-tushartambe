@@ -44,6 +44,7 @@ const readFile = function(organizedData,fileReader,isFileExists) {
   let { option, count, files, readerSelector } = organizedData;
   let formatedData =[];
   let delimeter = "";
+
   for(let counter = 0; counter < files.length; counter++){
     if(isFileExists(files[counter])) {
       formatedData.push(delimeter+'==> '+files[counter]+' <==');
@@ -53,34 +54,52 @@ const readFile = function(organizedData,fileReader,isFileExists) {
       formatedData.push('head: '+files[counter]+': No such file or directory');
     }
   }
+
   return formatedData.join("\n");
+}
+
+const isZero = input => input == 0;
+
+const isInvalidOption = function(givenOption) {
+  return givenOption[0] == '-' && givenOption[1] != 'n' && givenOption[1] != 'c' && !parseInt(givenOption);
+}
+
+const isInvalidCount = function(count) {
+  return isNaN(count - 0) || count < 1;
+}
+
+const readFilesAndErrorHandler = function(headData,organizedData,fileReader,isFileExists) {
+  let { option, count, files, readerSelector } = organizedData;
+
+  if( isZero(headData[2]) || isZero(count) ){
+    return 'head: illegal line count -- 0'
+  }
+
+  if(isInvalidOption(headData[2])){
+    let errorMsg = 'head: illegal option -- '+headData[2][1]+'\nusage: head [-n lines | -c bytes] [file ...]';
+    return errorMsg;
+  }
+
+  if(isInvalidCount(count)) {
+    return (option == 'n') ? 'head: illegal line count -- '+headData[2].slice(2) : 'head: illegal byte count -- '+headData[2].slice(2);
+  }
+
+  if(files.length == 1 ) {
+    if(!isFileExists(files[0])){
+      return 'head: '+files[0]+': No such file or directory'
+    }
+    return readFileContents(fileReader,files[0],organizedData);
+  }
+
+  return readFile(organizedData,fileReader,isFileExists);
 }
 
 const head = function(headData,fileReader,isFileExists) {
   let organizedData = separateCmdLineArgs(headData);
   let readerSelector = { 'c':getBytes,'n':getLines }
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
-  
-  if( headData[2] == 0 || organizedData.count == 0 ){
-    return 'head: illegal line count -- 0'
-  }
-  
-  if(headData[2][0]=='-' && headData[2][1] !='n' && headData[2][1] != 'c' && !parseInt(headData[2])){
-    return 'head: illegal option -- '+headData[2][1]+'\nusage: head [-n lines | -c bytes] [file ...]'
-  }
-  
-  if(isNaN(organizedData.count-0) ||organizedData.count < 1) {
-    return (organizedData.option == 'n') ? 'head: illegal line count -- ' + headData[2].slice(2) : 'head: illegal byte count -- ' + headData[2].slice(2);
-  }
 
-  if(organizedData['files'].length == 1 ) {
-    if(!isFileExists(organizedData.files[0])){
-      return 'head: '+organizedData.files[0]+': No such file or directory'
-    }
-    return readFileContents(fileReader,organizedData.files[0],organizedData);
-  }
-
-  return readFile(organizedData,fileReader,isFileExists);
+  return readFilesAndErrorHandler(headData,organizedData,fileReader,isFileExists);
 }
 
 module.exports = {
