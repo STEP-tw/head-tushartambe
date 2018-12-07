@@ -293,4 +293,35 @@ describe('head', function () {
       assert.deepEqual(head(['','',"-cu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
     });
   });
+  
+  describe('handle errors of files', function () {
+    describe('single file that not exists', function () {
+      let isFileExists = file => false;
+      it('should return file not found error ', function(){
+        let givenCmdLineArgs = [ '/usr/local/bin/node',
+          '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+          '-n',
+          '3',
+          'someFile'];
+        let expectedOutput = 'head: '+'someFile'+': No such file or directory'
+
+        assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),expectedOutput);
+      });
+    });
+
+    describe('multiple files that not exists', function () {
+      let isFileExists = file => false;
+      it('should return file not found error of each file', function(){
+        let givenCmdLineArgs = [ '/usr/local/bin/node',
+          '/Users/tmtushar/Projects/ownHeadCommand/head.js',
+          '-n',
+          '3',
+          'someFile',
+          'someFile2'];
+        let expectedOutput = 'head: '+'someFile'+': No such file or directory'+'\n'+'head: '+'someFile2'+': No such file or directory'
+
+        assert.deepEqual(head(givenCmdLineArgs,fileReaderIdentity,isFileExists),expectedOutput);
+      });
+    });
+  });
 });
