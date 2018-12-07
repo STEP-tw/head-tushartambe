@@ -292,6 +292,5 @@ describe('head', function () {
       expectedOutput = 'head: illegal byte count -- u922';
       assert.deepEqual(head(['','',"-cu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
     });
-
   });
 });

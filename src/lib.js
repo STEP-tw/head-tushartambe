@@ -35,37 +35,27 @@ const getLines = function(count,contents) {
   return contents.split("\n").slice(0,count).join("\n");
 }
 
-const readFileContents = function(fileReader,fileName) {
-  return fileReader(fileName,'utf8');
+const readFileContents = function(fileReader,fileName,organizedData) {
+  const {count , readerSelector } = organizedData;
+  return readerSelector(count, fileReader(fileName,'utf8'))
 }
 
-const addFileNames = function(fileNames,fileContents) {
+const readFile = function(organizedData,fileReader,isFileExists) {
+  let { option, count, files, readerSelector } = organizedData;
   let formatedData =[];
   let delimeter = "";
-  for(let counter = 0; counter < fileNames.length; counter++){
-    formatedData[counter] = delimeter+'==> '+fileNames[counter]+' <=='+'\n'+fileContents[counter];
-    delimeter = "\n";
+  for(let counter = 0; counter < files.length; counter++){
+    if(isFileExists(files[counter])) {
+      formatedData.push(delimeter+'==> '+files[counter]+' <==');
+      formatedData.push(readFileContents(fileReader,files[counter],organizedData)); 
+      delimeter = "\n";
+    } else {
+      formatedData.push('head: '+files[counter]+': No such file or directory');
+    }
   }
-  return formatedData;
+  return formatedData.join("\n");
 }
 
-const readFile = function(organizedData,fileReader) {
-  let readFiles = readFileContents.bind(null,fileReader);
-  let fileContents = organizedData['files'].map(readFiles);
-  
-  let optionSelector = organizedData['readerSelector'].bind(null,organizedData.count);
-  let requiredData = fileContents.map(optionSelector);
-  if(requiredData.length < 2) {
-    return requiredData.join("");
-  }
-
-  let contentsWithFileName = addFileNames(organizedData.files,requiredData);
-  return contentsWithFileName.join("\n");
-}
-
-const isExists = function(file, isFileExists) {
-  return isFileExists(file);
-}
 const head = function(headData,fileReader,isFileExists) {
   let organizedData = separateCmdLineArgs(headData);
   let readerSelector = { 'c':getBytes,'n':getLines }
@@ -83,7 +73,14 @@ const head = function(headData,fileReader,isFileExists) {
     return (organizedData.option == 'n') ? 'head: illegal line count -- ' + headData[2].slice(2) : 'head: illegal byte count -- ' + headData[2].slice(2);
   }
 
-  return readFile(organizedData,fileReader);
+  if(organizedData['files'].length == 1 ) {
+    if(!isFileExists(organizedData.files[0])){
+      return 'head: '+organizedData.files[0]+': No such file or directory'
+    }
+    return readFileContents(fileReader,organizedData.files[0],organizedData);
+  }
+
+  return readFile(organizedData,fileReader,isFileExists);
 }
 
 module.exports = {
@@ -91,6 +88,5 @@ module.exports = {
   getBytes,
   getLines,
   readFile,
-  addFileNames,
   readFileContents,
   head };
