@@ -114,10 +114,28 @@ const head = function(headData,fileReader,isFileExists) {
   return readFilesAndErrorHandler(headData,organizedData,fileReader,isFileExists);
 }
 
+const getTailBytes = function(count,contents) {
+  return contents.split("").slice(-count).join("");
+}
+
+const getTailLines = function(count,contents) {
+  return contents.split("\n").slice(-count).join("\n");
+}
+
+const tail = function(tailData,fileReader,isFileExists) {
+  let organizedData = separateCmdLineArgs(tailData);
+  let readerSelector = { 'c':getTailBytes,'n':getTailLines }
+  organizedData['readerSelector'] = readerSelector[organizedData['option']];
+
+  return readFilesAndErrorHandler(tailData,organizedData,fileReader,isFileExists);
+}
+
+
 module.exports = {
   separateCmdLineArgs,
   getBytes,
   getLines,
   readFile,
   readFileContents,
+  tail,
   head };

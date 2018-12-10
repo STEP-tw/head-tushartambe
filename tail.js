@@ -14,5 +14,13 @@
   node ./tail.js -c 5 file1 file2
 */
 
+const fileReader = require('fs').readFileSync;
+const isFileExists = require('fs').existsSync;
+const { tail } = require('./src/lib.js');
 
+const main = function(usrInputs) {
+  let tailData = usrInputs.slice(2);
+  console.log(tail(tailData, fileReader, isFileExists))
+}
 
+main(process.argv);

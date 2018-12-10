@@ -4,6 +4,7 @@ const {
   getBytes,
   getLines,
   readFile,
+  tail,
   head } = require('../src/lib.js');
 
 const multipleFileReader = function( file ) {
@@ -268,3 +269,40 @@ describe('head', function () {
     });
   });
 });
+
+describe('tail with single file', function () {
+  describe('for separate-on option and count is not given', function () {
+    it('should return last 10 lines or if less lines then whole file of file',function () {
+      let givenCmdLineArgs = [ 'file' ];
+      assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5');
+    });
+  });
+
+  describe('for separate-on option is not given and count is given', function () {
+    it('should return last given number of lines', function () {
+      let givenCmdLineArgs = [ '-5', 'file' ];
+      assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 1\nline 2\nline 3\nline 4\nline 5');
+    });
+  });
+
+  describe('for separate-on option is given and count is given with it', function () {
+    it('should return last given number of lines/characters as per option', function () {
+      let givenCmdLineArgs = [ '-n2', 'file' ];
+      assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 4\nline 5');
+
+      givenCmdLineArgs = [ '-c8', 'file' ];
+      assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),'4\nline 5');
+    });
+  });
+
+  describe('for separate-on option is given and count is given separately', function () {
+    it('should return given number of lines/characters as per option', function () {
+      let givenCmdLineArgs = [ '-n','2', 'file' ];
+      assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),'line 4\nline 5');
+
+      givenCmdLineArgs = [ '-c', '8', 'file' ];
+     assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),'4\nline 5');
+    });
+  });
+});
+
