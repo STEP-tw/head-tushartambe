@@ -306,3 +306,39 @@ describe('tail with single file', function () {
   });
 });
 
+describe('tail', function () {
+  describe('handle errors', function () {
+
+    it('should return error when count is invalid', function() {
+      let expectedOutput = 'tail: illegal offset -- -1r0';
+      assert.deepEqual(tail(["-n-1r0","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+    });
+
+    it('should return error when invalid option is speciified', function() {
+      let expectedOutput = 'tail: illegal option -- z\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
+      assert.deepEqual(tail(["-z","file1"],fileReaderIdentity, isFileExists),expectedOutput);
+    });
+
+    it('should return the error message when -n or -c and then alphanumeric combination is given ', function () {
+      let expectedOutput = 'tail: illegal offset -- u922';
+      assert.deepEqual(tail(["-nu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
+
+      expectedOutput = 'tail: illegal offset -- u922';
+      assert.deepEqual(tail(["-cu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
+    });
+  });
+
+  describe('handle errors of files', function () {
+    describe('single file that not exists', function () {
+      let isFileExists = file => false;
+      it('should return file not found error ', function(){
+        let givenCmdLineArgs = [ '-n',
+          '3',
+          'someFile'];
+        let expectedOutput = 'tail: '+'someFile'+': No such file or directory'
+
+        assert.deepEqual(tail(givenCmdLineArgs,fileReaderIdentity,isFileExists),expectedOutput);
+      });
+    });
+  });
+});

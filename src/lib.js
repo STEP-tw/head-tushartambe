@@ -7,8 +7,12 @@ const isCountOption = function(input) {
 }
 
 const isCharacterOption = function(input) {
-  return isOption(input) && input.length == 2;
+  return isOption(input) && input.length == 2 && !isZero(input[1]);
 } 
+
+const isOptionZero = function(input) {
+  return isOption(input) && input.length == 2 && isZero(input[1]);
+}
 
 const separateCmdLineArgs = function(cmdArgs) {
   let cmdLineInputs = {
@@ -29,6 +33,12 @@ const separateCmdLineArgs = function(cmdArgs) {
   if(isCharacterOption(options)) {
     +options[1] || (cmdLineInputs.option = options[1],cmdLineInputs.count = cmdArgs[1],cmdLineInputs.files = cmdArgs.slice(2));
     +options[1] && (cmdLineInputs.option = 'n', cmdLineInputs.count =options[1], cmdLineInputs.files = cmdArgs.slice(1));
+  }
+
+  if(isOptionZero(options)) {
+    cmdLineInputs.option = 'n';
+    cmdLineInputs.count = 0;
+    cmdLineInputs.files = cmdArgs.slice(1);
   }
 
   if(!options.includes('-')){
@@ -80,26 +90,59 @@ const isInvalidCount = function(count) {
   return isNaN(count - 0) || count < 1;
 }
 
-const readFilesAndErrorHandler = function(headData,organizedData,fileReader,isFileExists) {
+const errors = {
+  head : function(headData,organizedData,isFileExists) {
+    let { count, files, option} = organizedData;
+
+    if( isZero(headData[0]) || isZero(count) ){
+      return 'head: illegal line count -- 0'
+    }
+
+    if(isInvalidOption(headData[0])){
+      let errorMsg = 'head: illegal option -- '+headData[0][1]+'\nusage: head [-n lines | -c bytes] [file ...]';
+      return errorMsg;
+    }
+
+    if(isInvalidCount(count)) {
+      return (option == 'n') ? 'head: illegal line count -- '+headData[0].slice(2) : 'head: illegal byte count -- '+headData[0].slice(2);
+    }
+
+    if(files.length == 1 && !isFileExists(files[0])){
+      return 'head: '+files[0]+': No such file or directory'
+    }
+  },
+  tail : function(headData,organizedData,isFileExists) {
+    let { count, files, option} = organizedData;
+
+    if( isZero(headData[0]) || isZero(count) ){
+      return '';
+    }
+
+    if(isInvalidOption(headData[0])){
+      let errorMsg = 'tail: illegal option -- '+headData[0][1]+'\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
+      return errorMsg;
+    }
+
+    if(isInvalidCount(count)) {
+      return 'tail: illegal offset -- '+headData[0].slice(2);
+    }
+
+    if(files.length == 1 && !isFileExists(files[0])){
+      return 'tail: '+files[0]+': No such file or directory'
+    }
+  }
+}
+
+const readFilesAndErrorHandler = function(headData,organizedData,fileReader,isFileExists,funName) {
   let { option, count, files, readerSelector } = organizedData;
 
-  if( isZero(headData[0]) || isZero(count) ){
-    return 'head: illegal line count -- 0'
-  }
+  let errorMsg = errors[funName](headData,organizedData,isFileExists);
 
-  if(isInvalidOption(headData[0])){
-    let errorMsg = 'head: illegal option -- '+headData[0][1]+'\nusage: head [-n lines | -c bytes] [file ...]';
-    return errorMsg;
-  }
-
-  if(isInvalidCount(count)) {
-    return (option == 'n') ? 'head: illegal line count -- '+headData[0].slice(2) : 'head: illegal byte count -- '+headData[0].slice(2);
+  if(errorMsg || errorMsg == "") {
+    return  errors[funName](headData,organizedData,isFileExists)
   }
 
   if(files.length == 1 ) {
-    if(!isFileExists(files[0])){
-      return 'head: '+files[0]+': No such file or directory'
-    }
     return readFileContents(fileReader,files[0],organizedData);
   }
 
@@ -111,7 +154,7 @@ const head = function(headData,fileReader,isFileExists) {
   let readerSelector = { 'c':getBytes,'n':getLines }
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
-  return readFilesAndErrorHandler(headData,organizedData,fileReader,isFileExists);
+  return readFilesAndErrorHandler(headData,organizedData,fileReader,isFileExists,'head');
 }
 
 const getTailBytes = function(count,contents) {
@@ -127,7 +170,7 @@ const tail = function(tailData,fileReader,isFileExists) {
   let readerSelector = { 'c':getTailBytes,'n':getTailLines }
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
-  return readFilesAndErrorHandler(tailData,organizedData,fileReader,isFileExists);
+  return readFilesAndErrorHandler(tailData,organizedData,fileReader,isFileExists,'tail');
 }
 
 
