@@ -16,10 +16,20 @@ const isOptionZero = function(input) {
 
 const isZero = input => input == 0;
 
+const isInvalidOption = function(givenOption) {
+  return givenOption[0] == '-' && givenOption[1] != 'n' && givenOption[1] != 'c' && !parseInt(givenOption);
+}
+
+const isInvalidCount = function(count) {
+  return isNaN(count - 0) || count < 1;
+}
+
 module.exports = {
   isZero,
   isOption,
   isCountOption,
   isCharacterOption,
-  isOptionZero
+  isOptionZero,
+  isInvalidOption,
+  isInvalidCount
 };

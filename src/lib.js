@@ -3,7 +3,9 @@ const  {
   isCountOption,
   isCharacterOption,
   isOptionZero,
-  isZero } = require('./util.js');
+  isZero,
+  isInvalidOption,
+  isInvalidCount } = require('./util.js');
 
 const separateCmdLineArgs = function(cmdArgs) {
   let cmdLineInputs = {
@@ -69,14 +71,6 @@ const readFile = function(organizedData,fileReader,isFileExists) {
   }
 
   return formatedData.join("\n");
-}
-
-const isInvalidOption = function(givenOption) {
-  return givenOption[0] == '-' && givenOption[1] != 'n' && givenOption[1] != 'c' && !parseInt(givenOption);
-}
-
-const isInvalidCount = function(count) {
-  return isNaN(count - 0) || count < 1;
 }
 
 const errors = {
