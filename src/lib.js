@@ -1,18 +1,9 @@
-const isOption = function(input) {
-  return input[0] == '-';
-}
-
-const isCountOption = function(input) {
-  return isOption(input) && input.length > 2;
-}
-
-const isCharacterOption = function(input) {
-  return isOption(input) && input.length == 2 && !isZero(input[1]);
-} 
-
-const isOptionZero = function(input) {
-  return isOption(input) && input.length == 2 && isZero(input[1]);
-}
+const  {
+  isOption,
+  isCountOption,
+  isCharacterOption,
+  isOptionZero,
+  isZero } = require('./util.js');
 
 const separateCmdLineArgs = function(cmdArgs) {
   let cmdLineInputs = {
@@ -79,8 +70,6 @@ const readFile = function(organizedData,fileReader,isFileExists) {
 
   return formatedData.join("\n");
 }
-
-const isZero = input => input == 0;
 
 const isInvalidOption = function(givenOption) {
   return givenOption[0] == '-' && givenOption[1] != 'n' && givenOption[1] != 'c' && !parseInt(givenOption);
@@ -172,7 +161,6 @@ const tail = function(tailData,fileReader,isFileExists) {
 
   return readFilesAndErrorHandler(tailData,organizedData,fileReader,isFileExists,'tail');
 }
-
 
 module.exports = {
   separateCmdLineArgs,
