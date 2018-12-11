@@ -23,7 +23,7 @@ const readFileContents = function(fileReader,fileName,organizedData) {
   return readerSelector(count, fileReader(fileName,'utf8'))
 }
 
-const readFile = function(organizedData,fileReader,isFileExists) {
+const readFile = function(organizedData,fileReader,isFileExists,funName) {
   let { option, count, files, readerSelector } = organizedData;
   let formatedData =[];
   let delimeter = "";
@@ -34,7 +34,7 @@ const readFile = function(organizedData,fileReader,isFileExists) {
       formatedData.push(readFileContents(fileReader,files[counter],organizedData)); 
       delimeter = "\n";
     } else {
-      formatedData.push('head: '+files[counter]+': No such file or directory');
+      formatedData.push(funName+': '+files[counter]+': No such file or directory');
     }
   }
 
@@ -54,7 +54,7 @@ const readFilesAndErrorHandler = function(headData,organizedData,fileReader,isFi
     return readFileContents(fileReader,files[0],organizedData);
   }
 
-  return readFile(organizedData,fileReader,isFileExists);
+  return readFile(organizedData,fileReader,isFileExists,funName);
 }
 
 const head = function(headData,fileReader,isFileExists) {
