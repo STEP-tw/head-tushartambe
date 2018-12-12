@@ -1,7 +1,4 @@
-const  { isOption,
-  isCountOption,
-  isCharacterOption,
-  isOptionZero,
+const  {
   isZero,
   isInvalidOption,
   isInvalidCount } = require('./util.js');

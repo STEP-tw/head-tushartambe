@@ -2,7 +2,6 @@ const assert = require('assert');
 const {
   getBytes,
   getLines,
-  readFile,
   tail,
   head } = require('../src/lib.js');
 

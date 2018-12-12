@@ -1,11 +1,7 @@
 const  {
-  isOption,
   isCountOption,
   isCharacterOption,
-  isOptionZero,
-  isZero,
-  isInvalidOption,
-  isInvalidCount } = require('./util.js');
+  isOptionZero } = require('./util.js');
 
 const separateCmdLineArgs = function(cmdArgs) {
   let cmdLineInputs = {

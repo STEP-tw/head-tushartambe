@@ -1,12 +1,3 @@
-const  {
-  isOption,
-  isCountOption,
-  isCharacterOption,
-  isOptionZero,
-  isZero,
-  isInvalidOption,
-  isInvalidCount } = require('./util.js');
-
 const { errors } = require('./errors.js');
 const { separateCmdLineArgs } = require('./parser.js');
 
