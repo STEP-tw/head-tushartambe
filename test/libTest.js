@@ -85,8 +85,28 @@ describe('getTailBytes', function () {
   });
 
   describe('for count value less than total string characters', function () {
-    it('should return same number of characters as count', function () {
+    it('should return same number of last characters as count', function () {
       assert.deepEqual(getTailBytes(8,'line 1\nline'),'e 1\nline');
+    });
+  });
+});
+
+describe('getTailLines', function () {
+  describe('for empty contents and any count value', function () {
+    it('should return empty value',function () {
+      assert.deepEqual(getTailLines(4,''),'');
+    });
+  });
+
+  describe('for count value greater than total lines', function () {
+    it('should return whole string ', function () {
+      assert.deepEqual(getTailLines(20,'line 1\nline'),'line 1\nline');
+    });
+  });
+
+  describe('for count value less than total lines', function () {
+    it('should return same number of last lines as count', function () {
+      assert.deepEqual(getTailLines(5,'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8'),'line 4\nline 5\nline 6\nline 7\nline 8');
     });
   });
 });
