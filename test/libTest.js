@@ -6,6 +6,7 @@ const {
   getTailLines,
   readFile,
   readFileContents,
+  readFilesAndErrorHandler,
   tail,
   head } = require('../src/lib.js');
 
@@ -153,6 +154,28 @@ describe('readFileContents', function () {
       let output = 'line1\nline2\nline3\nline4\nline5';
       assert.deepEqual(readFileContents(fileReaderIdentity, 'file1', organizedData), output);
   });
+});
+
+describe('readFilesAndErrorHandler', function () {
+  it('should return error if there is invalid option', function () {
+      const fileReaderIdentity = function (file) {
+        return 'line1\nline2\nline3\nline4\nline5';
+      };
+      let organizedData = { option: 'x', count: 10, files: ['file1',] };
+      let output = 'head: illegal option -- x\nusage: head [-n lines | -c bytes] [file ...]';
+      let headData = ['-x', '10', 'file1'];
+      assert.deepEqual(readFilesAndErrorHandler(headData, organizedData,fileReaderIdentity,isFileExists,'head'), output);
+  });
+
+  it('should return required data as per option and count for all valid inputs', function () {
+    const fileReaderIdentity = function (file) {
+      return 'line1\nline2\nline3\nline4\nline5';
+    };
+    let organizedData = { option: 'n', count: 10, files: ['file1'],readerSelector: getLines };
+    let output = 'line1\nline2\nline3\nline4\nline5';
+    let headData = ['-n', '10', 'file1'];
+    assert.deepEqual(readFilesAndErrorHandler(headData, organizedData,fileReaderIdentity,isFileExists,'head'), output);
+});
 });
 
 describe('head with single file', function () {

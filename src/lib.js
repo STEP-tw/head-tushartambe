@@ -87,6 +87,7 @@ module.exports = {
   getTailLines,
   readFile,
   readFileContents,
+  readFilesAndErrorHandler,
   tail,
   head
 };
