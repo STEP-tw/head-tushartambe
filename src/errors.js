@@ -1,7 +1,12 @@
-const  {
-  isZero,
-  isInvalidOption,
-  isInvalidCount } = require('./util.js');
+const isZero = input => input == 0;
+
+const isInvalidOption = function(givenOption) {
+  return givenOption[0] == '-' && givenOption[1] != 'n' && givenOption[1] != 'c' && !parseInt(givenOption);
+}
+  
+const isInvalidCount = function(count) {
+  return isNaN(count - 0) || count < 1;
+}
 
 const errors = {
   head : function(headData,organizedData,isFileExists) {
