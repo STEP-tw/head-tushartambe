@@ -2,6 +2,8 @@ const assert = require('assert');
 const {
   getBytes,
   getLines,
+  getTailBytes,
+  getTailLines,
   tail,
   head } = require('../src/lib.js');
 
@@ -69,6 +71,25 @@ describe('getLines', function () {
   });
 });
 
+describe('getTailBytes', function () {
+  describe('for empty contents and any count value', function () {
+    it('should return empty value',function () {
+      assert.deepEqual(getTailBytes(4,''),'');
+    });
+  });
+
+  describe('for count value greater than total string characters', function () {
+    it('should return whole string ', function () {
+      assert.deepEqual(getTailBytes(20,'line 1\nline'),'line 1\nline');
+    });
+  });
+
+  describe('for count value less than total string characters', function () {
+    it('should return same number of characters as count', function () {
+      assert.deepEqual(getTailBytes(8,'line 1\nline'),'e 1\nline');
+    });
+  });
+});
 
 describe('head with single file', function () {
   describe('for separate-on option and count is not given', function () {

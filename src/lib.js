@@ -76,6 +76,8 @@ module.exports = {
   separateCmdLineArgs,
   getBytes,
   getLines,
+  getTailBytes,
+  getTailLines,
   readFile,
   readFileContents,
   tail,
