@@ -320,6 +320,12 @@ describe('tail', function () {
       expectedOutput = 'tail: illegal offset -- u922';
       assert.deepEqual(tail(["-cu922",'README.mdafs','file2.txt'],fileReaderIdentity,isFileExists),expectedOutput);
     });
+
+    it('should return empty string for count 0', function () {
+      let expectedOutput = '';
+
+      assert.deepEqual(tail(["-c","0",'file'],fileReaderIdentity,isFileExists),expectedOutput);
+    });
   });
 
   describe('handle errors of files', function () {
