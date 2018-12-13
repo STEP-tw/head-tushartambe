@@ -15,18 +15,19 @@ const readFileContents = function (fileReader, fileName, organizedData) {
 }
 
 const readFile = function (organizedData, fileReader, isFileExists, funName) {
-  let { option, count, files, readerSelector } = organizedData;
+  let { files } = organizedData;
   let formatedData = [];
   let delimeter = "";
 
   for (let counter = 0; counter < files.length; counter++) {
+    let fileData = funName + ': ' + files[counter] + ': No such file or directory';
+    
     if (isFileExists(files[counter])) {
-      formatedData.push(delimeter + '==> ' + files[counter] + ' <==');
-      formatedData.push(readFileContents(fileReader, files[counter], organizedData));
+      fileData = delimeter + '==> ' + files[counter] + ' <=='+'\n';
+      fileData += readFileContents(fileReader, files[counter], organizedData);
       delimeter = "\n";
-    } else {
-      formatedData.push(funName + ': ' + files[counter] + ': No such file or directory');
-    }
+    } 
+    formatedData.push(fileData);
   }
 
   return formatedData.join("\n");
