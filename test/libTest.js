@@ -5,6 +5,7 @@ const {
   getTailBytes,
   getTailLines,
   readFile,
+  readFileContents,
   tail,
   head } = require('../src/lib.js');
 
@@ -140,6 +141,17 @@ describe('readFile', function () {
       };
       assert.deepEqual(readFile(organizedData, fileReaderIdentity, isFileExists,'head'), output);
     });
+  });
+});
+
+describe('readFileContents', function () {
+  it('should return the contents of file as per count and option', function () {
+      const fileReaderIdentity = function (file) {
+        return 'line1\nline2\nline3\nline4\nline5';
+      };
+      let organizedData = { option: 'n', count: 10, files: ['file1',], readerSelector: getLines };
+      let output = 'line1\nline2\nline3\nline4\nline5';
+      assert.deepEqual(readFileContents(fileReaderIdentity, 'file1', organizedData), output);
   });
 });
 
