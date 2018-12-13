@@ -11,7 +11,7 @@ const getLines = function (count, contents) {
 
 const readFileContents = function (fileReader, fileName, organizedData) {
   const { count, readerSelector } = organizedData;
-  return readerSelector(count, fileReader(fileName, 'utf8'))
+  return readerSelector(count, fileReader(fileName, 'utf8'));
 }
 
 const readFile = function (organizedData, fileReader, isFileExists, funName) {
@@ -21,12 +21,12 @@ const readFile = function (organizedData, fileReader, isFileExists, funName) {
 
   for (let counter = 0; counter < files.length; counter++) {
     let fileData = funName + ': ' + files[counter] + ': No such file or directory';
-    
+
     if (isFileExists(files[counter])) {
-      fileData = delimeter + '==> ' + files[counter] + ' <=='+'\n';
+      fileData = delimeter + '==> ' + files[counter] + ' <==' + '\n';
       fileData += readFileContents(fileReader, files[counter], organizedData);
       delimeter = "\n";
-    } 
+    }
     formatedData.push(fileData);
   }
 
@@ -34,12 +34,12 @@ const readFile = function (organizedData, fileReader, isFileExists, funName) {
 }
 
 const readFilesAndErrorHandler = function (headData, organizedData, fileReader, isFileExists, funName) {
-  let { option, count, files, readerSelector } = organizedData;
+  let { files } = organizedData;
 
   let errorMsg = errors[funName](headData, organizedData, isFileExists);
 
   if (errorMsg || errorMsg == "") {
-    return errors[funName](headData, organizedData, isFileExists)
+    return errors[funName](headData, organizedData, isFileExists);
   }
 
   if (files.length == 1) {
@@ -51,7 +51,7 @@ const readFilesAndErrorHandler = function (headData, organizedData, fileReader, 
 
 const head = function (headData, fileReader, isFileExists) {
   let organizedData = separateCmdLineArgs(headData);
-  let readerSelector = { 'c': getBytes, 'n': getLines }
+  let readerSelector = { 'c': getBytes, 'n': getLines };
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
   return readFilesAndErrorHandler(headData, organizedData, fileReader, isFileExists, 'head');
@@ -67,12 +67,12 @@ const getTailLines = function (count, contents) {
 
 const tail = function (tailData, fileReader, isFileExists) {
   let organizedData = separateCmdLineArgs(tailData);
-  let readerSelector = { 'c': getTailBytes, 'n': getTailLines }
+  let readerSelector = { 'c': getTailBytes, 'n': getTailLines };
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
-  
+
   const isZero = input => input == 0;
 
-  if( isZero(tailData[0]) || isZero(organizedData.count) ){
+  if (isZero(tailData[0]) || isZero(organizedData.count)) {
     return '';
   }
 
