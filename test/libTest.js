@@ -4,6 +4,7 @@ const {
   getLines,
   getTailBytes,
   getTailLines,
+  readFile,
   tail,
   head } = require('../src/lib.js');
 
@@ -107,6 +108,37 @@ describe('getTailLines', function () {
   describe('for count value less than total lines', function () {
     it('should return same number of last lines as count', function () {
       assert.deepEqual(getTailLines(5, 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8'), 'line 4\nline 5\nline 6\nline 7\nline 8');
+    });
+  });
+});
+
+
+describe('readFile', function () {
+  describe('all files are exists', function () {
+    it('should return all files data as per count and option', function () {
+      const fileReaderIdentity = function (file) {
+        return 'line1\nline2\nline3\nline4\nline5';
+      };
+      let organizedData = { option: 'n', count: 10, files: ['file1','file1'], readerSelector: getLines };
+      let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n\n==> file1 <==\nline1\nline2\nline3\nline4\nline5';
+      assert.deepEqual(readFile(organizedData, fileReaderIdentity, isFileExists,'head'), output);
+    });
+  });
+
+  describe('if a file does not exists', function () {
+    it('should return error for missing file and data as per count and option for other file', function () {
+      const fileReaderIdentity = function (file) {
+        return 'line1\nline2\nline3\nline4\nline5';
+      };
+      let organizedData = { option: 'n', count: 10, files: ['file1','abc'], readerSelector: getLines };
+      let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n'+'head: abc: No such file or directory';
+      let isFileExists = function(fileName) {
+        if(fileName == 'abc') {
+          return false;
+        }
+        return true;
+      };
+      assert.deepEqual(readFile(organizedData, fileReaderIdentity, isFileExists,'head'), output);
     });
   });
 });
