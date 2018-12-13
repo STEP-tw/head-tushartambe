@@ -29,20 +29,16 @@ const errors = {
       return 'head: '+files[0]+': No such file or directory'
     }
   },
-  tail : function(headData,organizedData,isFileExists) {
+  tail : function(tailData,organizedData,isFileExists) {
     let { count, files, option} = organizedData;
 
-    if( isZero(headData[0]) || isZero(count) ){
-      return '';
-    }
-
-    if(isInvalidOption(headData[0])){
-      let errorMsg = 'tail: illegal option -- '+headData[0][1]+'\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
+    if(isInvalidOption(tailData[0])){
+      let errorMsg = 'tail: illegal option -- '+tailData[0][1]+'\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
       return errorMsg;
     }
 
     if(isInvalidCount(count)) {
-      return 'tail: illegal offset -- '+headData[0].slice(2);
+      return 'tail: illegal offset -- '+tailData[0].slice(2);
     }
 
     if(files.length == 1 && !isFileExists(files[0])){

@@ -68,6 +68,12 @@ const tail = function (tailData, fileReader, isFileExists) {
   let organizedData = separateCmdLineArgs(tailData);
   let readerSelector = { 'c': getTailBytes, 'n': getTailLines }
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
+  
+  const isZero = input => input == 0;
+
+  if( isZero(tailData[0]) || isZero(organizedData.count) ){
+    return '';
+  }
 
   return readFilesAndErrorHandler(tailData, organizedData, fileReader, isFileExists, 'tail');
 }
