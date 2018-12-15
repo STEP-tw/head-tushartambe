@@ -14,7 +14,7 @@ const readFileContents = function (fileReader, fileName, organizedData) {
   return readerSelector(count, fileReader(fileName, 'utf8'));
 }
 
-const readFile = function (organizedData, fileReader, isFileExists, funName) {
+const readFiles = function (organizedData, fileReader, isFileExists, funName) {
   let { files } = organizedData;
   let formatedData = [];
   let delimeter = "";
@@ -33,20 +33,14 @@ const readFile = function (organizedData, fileReader, isFileExists, funName) {
   return formatedData.join("\n");
 }
 
-const readFilesAndErrorHandler = function (headData, organizedData, fileReader, isFileExists, funName) {
+const getContents = function (organizedData, fileReader, isFileExists, funName) {
   let { files } = organizedData;
-
-  let errorMsg = errors[funName](headData, organizedData, isFileExists);
-
-  if (errorMsg || errorMsg == "") {
-    return errors[funName](headData, organizedData, isFileExists);
-  }
 
   if (files.length == 1) {
     return readFileContents(fileReader, files[0], organizedData);
   }
 
-  return readFile(organizedData, fileReader, isFileExists, funName);
+  return readFiles(organizedData, fileReader, isFileExists, funName);
 }
 
 const head = function (headData, fileReader, isFileExists) {
@@ -54,7 +48,13 @@ const head = function (headData, fileReader, isFileExists) {
   let readerSelector = { 'c': getBytes, 'n': getLines };
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
-  return readFilesAndErrorHandler(headData, organizedData, fileReader, isFileExists, 'head');
+  let errorMsg = errors['head'](headData, organizedData, isFileExists);
+
+  if (errorMsg ) {
+    return errors['head'](headData, organizedData, isFileExists);
+  }
+
+  return getContents(organizedData, fileReader, isFileExists, 'head');
 }
 
 const getTailBytes = function (count, contents) {
@@ -76,7 +76,13 @@ const tail = function (tailData, fileReader, isFileExists) {
     return '';
   }
 
-  return readFilesAndErrorHandler(tailData, organizedData, fileReader, isFileExists, 'tail');
+  let errorMsg = errors['tail'](tailData, organizedData, isFileExists);
+
+  if (errorMsg) {
+    return errors['tail'](tailData, organizedData, isFileExists);
+  }
+
+  return getContents(organizedData, fileReader, isFileExists, 'tail');
 }
 
 module.exports = {
@@ -85,9 +91,9 @@ module.exports = {
   getLines,
   getTailBytes,
   getTailLines,
-  readFile,
+  readFiles,
   readFileContents,
-  readFilesAndErrorHandler,
+  getContents,
   tail,
   head
 };

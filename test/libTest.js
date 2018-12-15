@@ -4,9 +4,9 @@ const {
   getLines,
   getTailBytes,
   getTailLines,
-  readFile,
+  readFiles,
   readFileContents,
-  readFilesAndErrorHandler,
+  getContents,
   tail,
   head } = require('../src/lib.js');
 
@@ -115,15 +115,15 @@ describe('getTailLines', function () {
 });
 
 
-describe('readFile', function () {
+describe('readFiles', function () {
   describe('all files are exists', function () {
     it('should return all files data as per count and option', function () {
       const fileReaderIdentity = function (file) {
         return 'line1\nline2\nline3\nline4\nline5';
       };
-      let organizedData = { option: 'n', count: 10, files: ['file1','file1'], readerSelector: getLines };
+      let organizedData = { option: 'n', count: 10, files: ['file1', 'file1'], readerSelector: getLines };
       let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n\n==> file1 <==\nline1\nline2\nline3\nline4\nline5';
-      assert.deepEqual(readFile(organizedData, fileReaderIdentity, isFileExists,'head'), output);
+      assert.deepEqual(readFiles(organizedData, fileReaderIdentity, isFileExists, 'head'), output);
     });
   });
 
@@ -132,50 +132,40 @@ describe('readFile', function () {
       const fileReaderIdentity = function (file) {
         return 'line1\nline2\nline3\nline4\nline5';
       };
-      let organizedData = { option: 'n', count: 10, files: ['file1','abc'], readerSelector: getLines };
-      let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n'+'head: abc: No such file or directory';
-      let isFileExists = function(fileName) {
-        if(fileName == 'abc') {
+      let organizedData = { option: 'n', count: 10, files: ['file1', 'abc'], readerSelector: getLines };
+      let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n' + 'head: abc: No such file or directory';
+      let isFileExists = function (fileName) {
+        if (fileName == 'abc') {
           return false;
         }
         return true;
       };
-      assert.deepEqual(readFile(organizedData, fileReaderIdentity, isFileExists,'head'), output);
+      assert.deepEqual(readFiles(organizedData, fileReaderIdentity, isFileExists, 'head'), output);
     });
   });
 });
 
 describe('readFileContents', function () {
   it('should return the contents of file as per count and option', function () {
-      const fileReaderIdentity = function (file) {
-        return 'line1\nline2\nline3\nline4\nline5';
-      };
-      let organizedData = { option: 'n', count: 10, files: ['file1',], readerSelector: getLines };
-      let output = 'line1\nline2\nline3\nline4\nline5';
-      assert.deepEqual(readFileContents(fileReaderIdentity, 'file1', organizedData), output);
+    const fileReaderIdentity = function (file) {
+      return 'line1\nline2\nline3\nline4\nline5';
+    };
+    let organizedData = { option: 'n', count: 10, files: ['file1',], readerSelector: getLines };
+    let output = 'line1\nline2\nline3\nline4\nline5';
+    assert.deepEqual(readFileContents(fileReaderIdentity, 'file1', organizedData), output);
   });
 });
 
-describe('readFilesAndErrorHandler', function () {
-  it('should return error if there is invalid option', function () {
-      const fileReaderIdentity = function (file) {
-        return 'line1\nline2\nline3\nline4\nline5';
-      };
-      let organizedData = { option: 'x', count: 10, files: ['file1',] };
-      let output = 'head: illegal option -- x\nusage: head [-n lines | -c bytes] [file ...]';
-      let headData = ['-x', '10', 'file1'];
-      assert.deepEqual(readFilesAndErrorHandler(headData, organizedData,fileReaderIdentity,isFileExists,'head'), output);
-  });
-
+describe('getContents', function () {
+  
   it('should return required data as per option and count for all valid inputs', function () {
     const fileReaderIdentity = function (file) {
       return 'line1\nline2\nline3\nline4\nline5';
     };
-    let organizedData = { option: 'n', count: 10, files: ['file1'],readerSelector: getLines };
+    let organizedData = { option: 'n', count: 10, files: ['file1'], readerSelector: getLines };
     let output = 'line1\nline2\nline3\nline4\nline5';
-    let headData = ['-n', '10', 'file1'];
-    assert.deepEqual(readFilesAndErrorHandler(headData, organizedData,fileReaderIdentity,isFileExists,'head'), output);
-});
+    assert.deepEqual(getContents(organizedData, fileReaderIdentity, isFileExists, 'head'), output);
+  });
 });
 
 describe('head with single file', function () {
