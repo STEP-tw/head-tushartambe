@@ -1,19 +1,21 @@
 const isZero = input => input == 0;
-
-const isOption = function (input) {
-  return input[0] == '-';
+const isNumber = function (input) {
+  return !isNaN(input);
 }
 
-const isCountOption = function (input) {
-  return isOption(input) && input.length > 2;
+const isOnlyOption = function (input) {
+  let options = ['-n', '-c'];
+  return options.includes(input);
 }
 
-const isCharacterOption = function (input) {
-  return isOption(input) && input.length == 2 && !isZero(input[1]);
+const isOptionWithNumber = function (input) {
+  let isOption = isOnlyOption(input.slice(0, 2));
+  return isOption && isNumber(parseInt(input.slice(2)));
 }
 
-const isOptionZero = function (input) {
-  return isOption(input) && input.length == 2 && isZero(input[1]);
+const isOptionWithInvalidCount = function (input) {
+  let isOption = isOnlyOption(input.slice(0, 2));
+  return isOption && isNaN(input.slice(2));
 }
 
 const separateCmdLineArgs = function (cmdArgs) {
@@ -23,27 +25,33 @@ const separateCmdLineArgs = function (cmdArgs) {
     files: []
   };
 
-  let options = cmdArgs[0].split("");
+  //let options = cmdArgs[0].split("");
 
-  if (isCountOption(options)) {
-    +options[1] && (cmdLineInputs.option = 'n', cmdLineInputs.count = +options.slice(1).join(""));
-    +options[1] || (cmdLineInputs.option = options[1], cmdLineInputs.count = +options.slice(2).join(""));
-
-    cmdLineInputs.files = cmdArgs.slice(1);
-  }
-
-  if (isCharacterOption(options)) {
-    +options[1] || (cmdLineInputs.option = options[1], cmdLineInputs.count = cmdArgs[1], cmdLineInputs.files = cmdArgs.slice(2));
-    +options[1] && (cmdLineInputs.option = 'n', cmdLineInputs.count = options[1], cmdLineInputs.files = cmdArgs.slice(1));
-  }
-
-  if (isOptionZero(options)) {
+  if (isNumber(cmdArgs[0])) {
     cmdLineInputs.option = 'n';
-    cmdLineInputs.count = 0;
+    cmdLineInputs.count = Math.abs(cmdArgs[0]);
     cmdLineInputs.files = cmdArgs.slice(1);
   }
 
-  if (!options.includes('-')) {
+  if (isOnlyOption(cmdArgs[0])) {
+    cmdLineInputs.option = cmdArgs[0][1];
+    cmdLineInputs.count = cmdArgs[1]
+    cmdLineInputs.files = cmdArgs.slice(2);
+  }
+
+  if (isOptionWithNumber(cmdArgs[0])) {
+    cmdLineInputs.option = cmdArgs[0][1];
+    cmdLineInputs.count =   cmdArgs[0].slice(2);
+    cmdLineInputs.files = cmdArgs.slice(1);
+  }
+
+  if (isOptionWithInvalidCount(cmdArgs[0])) {
+    cmdLineInputs.option = cmdArgs[0][1];
+    cmdLineInputs.count =   cmdArgs[0].slice(2);
+    cmdLineInputs.files = cmdArgs.slice(1);
+  }
+
+  if (!cmdArgs[0].includes('-')) {
     cmdLineInputs.files = cmdArgs.slice(0);
     cmdLineInputs.option = 'n';
     cmdLineInputs.count = 10;

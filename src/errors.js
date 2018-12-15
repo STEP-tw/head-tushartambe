@@ -5,7 +5,7 @@ const isInvalidOption = function (givenOption) {
 }
 
 const isInvalidCount = function (count) {
-  return isNaN(count - 0) || count < 1;
+  return isNaN(count) || count < 1;
 }
 
 const errors = {
