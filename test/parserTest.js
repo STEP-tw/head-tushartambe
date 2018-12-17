@@ -1,13 +1,13 @@
 const assert = require('assert');
 
-const { separateCmdLineArgs } = require('../src/parser.js');
+const { parseInputs } = require('../src/parser.js');
 
-describe('separateCmdLineArgs', function () {
+describe('parseInputs', function () {
   describe('for separate-on option and count is not given', function () {
     it('should separate all arguments and give default option -n and count 10', function () {
       let givenCmdLineArgs = ['file.txt'];
       let separatedArgs = { option: 'n', count: 10, files: ['file.txt'] };
-      assert.deepEqual(separateCmdLineArgs(givenCmdLineArgs), separatedArgs);
+      assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
     });
   });
 
@@ -15,7 +15,7 @@ describe('separateCmdLineArgs', function () {
     it('should separate all arguments and give default option -n and count as given', function () {
       let givenCmdLineArgs = ['-19', 'file.txt'];
       let separatedArgs = { option: 'n', count: 19, files: ['file.txt'] };
-      assert.deepEqual(separateCmdLineArgs(givenCmdLineArgs), separatedArgs);
+      assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
     });
   });
 
@@ -23,11 +23,11 @@ describe('separateCmdLineArgs', function () {
     it('should give separate-on option and given count', function () {
       let givenCmdLineArgs = ['-n19', 'file.txt'];
       let separatedArgs = { option: 'n', count: 19, files: ['file.txt'] };
-      assert.deepEqual(separateCmdLineArgs(givenCmdLineArgs), separatedArgs);
+      assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
 
       givenCmdLineArgs = ['-c8', 'file.txt'];
       separatedArgs = { option: 'c', count: 8, files: ['file.txt'] };
-      assert.deepEqual(separateCmdLineArgs(givenCmdLineArgs), separatedArgs);
+      assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
     });
   });
 
@@ -35,7 +35,7 @@ describe('separateCmdLineArgs', function () {
     it('should give separate-on option and count as given ', function () {
       let givenCmdLineArgs = ['-c', '8', 'file.txt'];
       let separatedArgs = { option: 'c', count: '8', files: ['file.txt'] };
-      assert.deepEqual(separateCmdLineArgs(givenCmdLineArgs), separatedArgs);
+      assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
     });
   });
 

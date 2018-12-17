@@ -19,14 +19,12 @@ const isOptionWithInvalidCount = function (input) {
   return isOption && isNaN(input.slice(2));
 }
 
-const separateCmdLineArgs = function (cmdArgs) {
+const parseInputs = function (cmdArgs) {
   let cmdLineInputs = {
     option: 'n',
     count: 10,
     files: []
   };
-
-  //let options = cmdArgs[0].split("");
 
   if (isNumber(cmdArgs[0])) {
     cmdLineInputs.option = 'n';
@@ -61,5 +59,5 @@ const separateCmdLineArgs = function (cmdArgs) {
 }
 
 module.exports = {
-  separateCmdLineArgs
+  parseInputs
 };

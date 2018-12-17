@@ -1,5 +1,5 @@
 const { errors } = require('./errors.js');
-const { separateCmdLineArgs } = require('./parser.js');
+const { parseInputs } = require('./parser.js');
 
 const getBytes = function (count, contents) {
   return contents.split("").slice(0, count).join("");
@@ -44,7 +44,7 @@ const getContents = function (organizedData, fileReader, isFileExists, funName) 
 }
 
 const head = function (headData, fileReader, isFileExists) {
-  let organizedData = separateCmdLineArgs(headData);
+  let organizedData = parseInputs(headData);
   let readerSelector = { 'c': getBytes, 'n': getLines };
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
@@ -66,7 +66,7 @@ const getTailLines = function (count, contents) {
 }
 
 const tail = function (tailData, fileReader, isFileExists) {
-  let organizedData = separateCmdLineArgs(tailData);
+  let organizedData = parseInputs(tailData);
   let readerSelector = { 'c': getTailBytes, 'n': getTailLines };
   organizedData['readerSelector'] = readerSelector[organizedData['option']];
 
@@ -86,7 +86,7 @@ const tail = function (tailData, fileReader, isFileExists) {
 }
 
 module.exports = {
-  separateCmdLineArgs,
+  parseInputs,
   getBytes,
   getLines,
   getTailBytes,
