@@ -58,10 +58,16 @@ const head = function (headData, fileReader, isFileExists) {
 }
 
 const getTailBytes = function (count, contents) {
+  if(count == 0){
+    return "";
+  }
   return contents.split("").slice(-count).join("");
 }
 
 const getTailLines = function (count, contents) {
+  if(count == 0){
+    return "";
+  }
   return contents.split("\n").slice(-count).join("\n");
 }
 

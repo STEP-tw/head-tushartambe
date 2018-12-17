@@ -4,8 +4,12 @@ const isInvalidOption = function (givenOption) {
   return givenOption[0] == '-' && givenOption[1] != 'n' && givenOption[1] != 'c' && !parseInt(givenOption);
 }
 
-const isInvalidCount = function (count) {
+const isInvalidHeadCount = function (count) {
   return isNaN(count) || count < 1;
+}
+
+const isInvalidTailCount = function (count) {
+  return isNaN(count) || count < 0;
 }
 
 const errors = {
@@ -21,7 +25,7 @@ const errors = {
       return errorMsg;
     }
 
-    if (isInvalidCount(count)) {
+    if (isInvalidHeadCount(count)) {
       return (option == 'n') ? 'head: illegal line count -- ' + headData[0].slice(2) : 'head: illegal byte count -- ' + headData[0].slice(2);
     }
 
@@ -37,7 +41,7 @@ const errors = {
       return errorMsg;
     }
 
-    if (isInvalidCount(count)) {
+    if (isInvalidTailCount(count)) {
       return 'tail: illegal offset -- ' + tailData[0].slice(2);
     }
 
