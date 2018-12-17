@@ -3,18 +3,19 @@ const isNumber = function (input) {
   return !isNaN(input);
 }
 
-const isOnlyOption = function (input) {
-  let options = ['-n', '-c'];
-  return options.includes(input);
+const isCharacterOption = function (input) {
+  let isNotAlphabet = !input[1].match(/^[a-zA-Z]+$/)
+  let length = input.length;
+  return !isNotAlphabet && (length == 2);
 }
 
 const isOptionWithNumber = function (input) {
-  let isOption = isOnlyOption(input.slice(0, 2));
+  let isOption = isCharacterOption(input.slice(0, 2));
   return isOption && isNumber(parseInt(input.slice(2)));
 }
 
 const isOptionWithInvalidCount = function (input) {
-  let isOption = isOnlyOption(input.slice(0, 2));
+  let isOption = isCharacterOption(input.slice(0, 2));
   return isOption && isNaN(input.slice(2));
 }
 
@@ -33,7 +34,7 @@ const separateCmdLineArgs = function (cmdArgs) {
     cmdLineInputs.files = cmdArgs.slice(1);
   }
 
-  if (isOnlyOption(cmdArgs[0])) {
+  if (isCharacterOption(cmdArgs[0])) {
     cmdLineInputs.option = cmdArgs[0][1];
     cmdLineInputs.count = cmdArgs[1]
     cmdLineInputs.files = cmdArgs.slice(2);
@@ -41,13 +42,13 @@ const separateCmdLineArgs = function (cmdArgs) {
 
   if (isOptionWithNumber(cmdArgs[0])) {
     cmdLineInputs.option = cmdArgs[0][1];
-    cmdLineInputs.count =   cmdArgs[0].slice(2);
+    cmdLineInputs.count = cmdArgs[0].slice(2);
     cmdLineInputs.files = cmdArgs.slice(1);
   }
 
   if (isOptionWithInvalidCount(cmdArgs[0])) {
     cmdLineInputs.option = cmdArgs[0][1];
-    cmdLineInputs.count =   cmdArgs[0].slice(2);
+    cmdLineInputs.count = cmdArgs[0].slice(2);
     cmdLineInputs.files = cmdArgs.slice(1);
   }
 
