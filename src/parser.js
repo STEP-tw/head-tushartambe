@@ -1,4 +1,3 @@
-const isZero = input => input == 0;
 const isNumber = function (input) {
   return !isNaN(input);
 }

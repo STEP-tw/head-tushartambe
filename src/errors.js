@@ -30,7 +30,7 @@ const errors = {
     }
   },
   tail: function (tailData, organizedData, isFileExists) {
-    let { count, files, option } = organizedData;
+    let { count, files } = organizedData;
 
     if (isInvalidOption(tailData[0])) {
       let errorMsg = 'tail: illegal option -- ' + tailData[0][1] + '\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
