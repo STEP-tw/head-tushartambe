@@ -23,7 +23,7 @@ const createObject = function(option, count, files) {
 
 const parseInputs = function (cmdArgs) {
   let cmdLineInputs = {};
-
+  
   if (isNumberOption(cmdArgs[0])) {
     cmdLineInputs = createObject('n', Math.abs(cmdArgs[0]), cmdArgs.slice(1));
   }
