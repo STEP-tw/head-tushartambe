@@ -28,6 +28,10 @@ describe('parseInputs', function () {
       givenCmdLineArgs = ['-c8', 'file.txt'];
       separatedArgs = { option: 'c', count: 8, files: ['file.txt'] };
       assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
+
+      givenCmdLineArgs = ['-p8', 'file.txt'];
+      separatedArgs = { option: 'p', count: 8, files: ['file.txt'] };
+      assert.deepEqual(parseInputs(givenCmdLineArgs), separatedArgs);
     });
   });
 

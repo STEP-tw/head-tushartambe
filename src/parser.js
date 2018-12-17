@@ -1,59 +1,45 @@
-const isNumber = function (input) {
-  return !isNaN(input);
+const isStartsWithHypen = function(givenOption) { 
+  return givenOption[0] == '-';
 }
 
-const isCharacterOption = function (input) {
-  let isNotAlphabet = !input[1].match(/^[a-zA-Z]+$/)
-  let length = input.length;
+const isNumberOption = function (input) {
+  return isStartsWithHypen(input) && !isNaN(input);
+}
+
+const isCharacterOption = function (givenOption) {
+  let isNotAlphabet = !givenOption[1].match(/[A-z]/)
+  let length = givenOption.length;
   return !isNotAlphabet && (length == 2);
 }
 
-const isOptionWithNumber = function (input) {
-  let isOption = isCharacterOption(input.slice(0, 2));
-  return isOption && isNumber(parseInt(input.slice(2)));
+const isOptionWithCount = function (givenOption) {
+  let isOption = isCharacterOption(givenOption.slice(0, 2));
+  return isOption && (givenOption.length > 2);
 }
 
-const isOptionWithInvalidCount = function (input) {
-  let isOption = isCharacterOption(input.slice(0, 2));
-  return isOption && isNaN(input.slice(2));
-}
+const createObject = function(option, count, files) {
+  return { 'option': option, 'count': count, 'files': files };
+} 
 
 const parseInputs = function (cmdArgs) {
-  let cmdLineInputs = {
-    option: 'n',
-    count: 10,
-    files: []
-  };
+  let cmdLineInputs = {};
 
-  if (isNumber(cmdArgs[0])) {
-    cmdLineInputs.option = 'n';
-    cmdLineInputs.count = Math.abs(cmdArgs[0]);
-    cmdLineInputs.files = cmdArgs.slice(1);
+  if (isNumberOption(cmdArgs[0])) {
+    cmdLineInputs = createObject('n', Math.abs(cmdArgs[0]), cmdArgs.slice(1));
   }
 
   if (isCharacterOption(cmdArgs[0])) {
-    cmdLineInputs.option = cmdArgs[0][1];
-    cmdLineInputs.count = cmdArgs[1]
-    cmdLineInputs.files = cmdArgs.slice(2);
+     cmdLineInputs = createObject(cmdArgs[0][1], cmdArgs[1], cmdArgs.slice(2));
   }
 
-  if (isOptionWithNumber(cmdArgs[0])) {
-    cmdLineInputs.option = cmdArgs[0][1];
-    cmdLineInputs.count = cmdArgs[0].slice(2);
-    cmdLineInputs.files = cmdArgs.slice(1);
+  if (isOptionWithCount(cmdArgs[0])) {
+    cmdLineInputs = createObject(cmdArgs[0][1], cmdArgs[0].slice(2), cmdArgs.slice(1));
+  }
+  
+  if (!isStartsWithHypen(cmdArgs[0])) {
+    cmdLineInputs = createObject('n', 10, cmdArgs.slice(0));
   }
 
-  if (isOptionWithInvalidCount(cmdArgs[0])) {
-    cmdLineInputs.option = cmdArgs[0][1];
-    cmdLineInputs.count = cmdArgs[0].slice(2);
-    cmdLineInputs.files = cmdArgs.slice(1);
-  }
-
-  if (!cmdArgs[0].includes('-')) {
-    cmdLineInputs.files = cmdArgs.slice(0);
-    cmdLineInputs.option = 'n';
-    cmdLineInputs.count = 10;
-  }
   return cmdLineInputs;
 }
 
