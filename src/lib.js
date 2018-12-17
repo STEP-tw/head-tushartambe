@@ -10,8 +10,8 @@ const getLines = function (count, contents) {
 }
 
 const readFileContents = function (fileReader, fileName, organizedData) {
-  const { count, readerSelector } = organizedData;
-  return readerSelector(count, fileReader(fileName, 'utf8'));
+  const { count, reader } = organizedData;
+  return reader(count, fileReader(fileName, 'utf8'));
 }
 
 const readFiles = function (organizedData, fileReader, isFileExists, funName) {
@@ -46,7 +46,7 @@ const getContents = function (organizedData, fileReader, isFileExists, funName) 
 const head = function (headData, fileReader, isFileExists) {
   let organizedData = parseInputs(headData);
   let readerSelector = { 'c': getBytes, 'n': getLines };
-  organizedData['readerSelector'] = readerSelector[organizedData['option']];
+  organizedData['reader'] = readerSelector[organizedData['option']];
 
   let errorMsg = errors['head'](headData, organizedData, isFileExists);
 
@@ -74,7 +74,7 @@ const getTailLines = function (count, contents) {
 const tail = function (tailData, fileReader, isFileExists) {
   let organizedData = parseInputs(tailData);
   let readerSelector = { 'c': getTailBytes, 'n': getTailLines };
-  organizedData['readerSelector'] = readerSelector[organizedData['option']];
+  organizedData['reader'] = readerSelector[organizedData['option']];
 
   const isZero = input => input == 0;
 

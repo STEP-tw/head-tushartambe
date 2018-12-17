@@ -121,7 +121,7 @@ describe('readFiles', function () {
       const fileReaderIdentity = function (file) {
         return 'line1\nline2\nline3\nline4\nline5';
       };
-      let organizedData = { option: 'n', count: 10, files: ['file1', 'file1'], readerSelector: getLines };
+      let organizedData = { option: 'n', count: 10, files: ['file1', 'file1'], reader: getLines };
       let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n\n==> file1 <==\nline1\nline2\nline3\nline4\nline5';
       assert.deepEqual(readFiles(organizedData, fileReaderIdentity, isFileExists, 'head'), output);
     });
@@ -132,7 +132,7 @@ describe('readFiles', function () {
       const fileReaderIdentity = function (file) {
         return 'line1\nline2\nline3\nline4\nline5';
       };
-      let organizedData = { option: 'n', count: 10, files: ['file1', 'abc'], readerSelector: getLines };
+      let organizedData = { option: 'n', count: 10, files: ['file1', 'abc'], reader: getLines };
       let output = '==> file1 <==\nline1\nline2\nline3\nline4\nline5\n' + 'head: abc: No such file or directory';
       let isFileExists = function (fileName) {
         if (fileName == 'abc') {
@@ -150,7 +150,7 @@ describe('readFileContents', function () {
     const fileReaderIdentity = function (file) {
       return 'line1\nline2\nline3\nline4\nline5';
     };
-    let organizedData = { option: 'n', count: 10, files: ['file1',], readerSelector: getLines };
+    let organizedData = { option: 'n', count: 10, files: ['file1',], reader: getLines };
     let output = 'line1\nline2\nline3\nline4\nline5';
     assert.deepEqual(readFileContents(fileReaderIdentity, 'file1', organizedData), output);
   });
@@ -162,7 +162,7 @@ describe('getContents', function () {
     const fileReaderIdentity = function (file) {
       return 'line1\nline2\nline3\nline4\nline5';
     };
-    let organizedData = { option: 'n', count: 10, files: ['file1'], readerSelector: getLines };
+    let organizedData = { option: 'n', count: 10, files: ['file1'], reader: getLines };
     let output = 'line1\nline2\nline3\nline4\nline5';
     assert.deepEqual(getContents(organizedData, fileReaderIdentity, isFileExists, 'head'), output);
   });
