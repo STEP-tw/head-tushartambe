@@ -1,9 +1,7 @@
 const assert = require('assert');
 const {
-  getBytes,
-  getLines,
-  getTailBytes,
-  getTailLines,
+  getHeadData,
+  getTailData,
   readFiles,
   readFileContents,
   getContents,
@@ -34,96 +32,124 @@ const existsSync = function (file) {
   return false;
 }
 
-describe('getBytes', function () {
+describe('getHeadData with separator "" ', function () {
   describe('for empty contents and any count value', function () {
     it('should return empty value', function () {
-      assert.deepEqual(getBytes(4, ''), '');
+      let expectedOutput = '';
+      let actual = getHeadData(4, '', '');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for 0 count value', function () {
     it('should empty value', function () {
-      assert.deepEqual(getBytes(0, 'line 1\nline 2\nline 3\nline 4\nline 5\nline'), '');
+      let expectedOutput = '';
+      let actual = getHeadData(0, 'line 1\nline 2\nline 3\nline 4\nline 5\nline','');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
   ``
   describe('for count value less than total string characters', function () {
     it('should return same number of characters as count', function () {
-      assert.deepEqual(getBytes(8, 'line 1\nline'), 'line 1\nl');
+      let expectedOutput = 'line 1\nl';
+      let actual = getHeadData(8, 'line 1\nline', '');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value greater than total string characters', function () {
     it('should return whole string ', function () {
-      assert.deepEqual(getBytes(20, 'line 1\nline'), 'line 1\nline');
+      let expectedOutput = 'line 1\nline';
+      let actual = getHeadData(20, 'line 1\nline', '');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 });
 
-describe('getLines', function () {
+describe('getHeadData with separator "\n" ', function () {
   describe('for 0 count value', function () {
     it('should empty value', function () {
-      assert.deepEqual(getLines(0, 'line 1\nline 2\nline 3\nline 4\nline 5\nline'), '');
+      let expectedOutput = '';
+      let actual = getHeadData(0, 'line 1\nline 2\nline 3\nline 4\nline 5\nline', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for empty contents and any count value', function () {
     it('should return empty value', function () {
-      assert.deepEqual(getLines(4, ''), '');
+      let expectedOutput = '';
+      let actual = getHeadData(4, '', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value less than total lines', function () {
     it('should return same number of lines as count', function () {
-      assert.deepEqual(getLines(5, 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8'), 'line 1\nline 2\nline 3\nline 4\nline 5');
+      let expectedOutput = 'line 1\nline 2\nline 3\nline 4\nline 5';
+      let actual = getHeadData(5, 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value greater than total lines', function () {
     it('should return whole string ', function () {
-      assert.deepEqual(getLines(20, 'line 1\nline'), 'line 1\nline');
+      let expectedOutput = 'line 1\nline';
+      let actual = getHeadData(20, 'line 1\nline', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
 
 });
 
-describe('getTailBytes', function () {
+describe('getTailData for separator "" ', function () {
   describe('for empty contents and any count value', function () {
     it('should return empty value', function () {
-      assert.deepEqual(getTailBytes(4, ''), '');
+      let expectedOutput = '';
+      let actual = getTailData(4, '', '');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value greater than total string characters', function () {
     it('should return whole string ', function () {
-      assert.deepEqual(getTailBytes(20, 'line 1\nline'), 'line 1\nline');
+      let expectedOutput = 'line 1\nline';
+      let actual = getTailData(20, 'line 1\nline', '');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value less than total string characters', function () {
     it('should return same number of last characters as count', function () {
-      assert.deepEqual(getTailBytes(8, 'line 1\nline'), 'e 1\nline');
+      let expectedOutput = 'e 1\nline';
+      let actual = getTailData(8, 'line 1\nline', '');
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 });
 
-describe('getTailLines', function () {
+describe('getTailData with separator "\n" ', function () {
   describe('for empty contents and any count value', function () {
     it('should return empty value', function () {
-      assert.deepEqual(getTailLines(4, ''), '');
+      let expectedOutput = '';
+      let actual = getTailData(4, '', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value greater than total lines', function () {
     it('should return whole string ', function () {
-      assert.deepEqual(getTailLines(20, 'line 1\nline'), 'line 1\nline');
+      let expectedOutput = 'line 1\nline';
+      let actual = getTailData(20, 'line 1\nline', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 
   describe('for count value less than total lines', function () {
     it('should return same number of last lines as count', function () {
-      assert.deepEqual(getTailLines(5, 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8'), 'line 4\nline 5\nline 6\nline 7\nline 8');
+      let expectedOutput = 'line 4\nline 5\nline 6\nline 7\nline 8';
+      let actual = getTailData(5, 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8', "\n");
+      assert.deepEqual(actual, expectedOutput);
     });
   });
 });
@@ -132,7 +158,7 @@ describe('getTailLines', function () {
 describe('readFiles', function () {
   describe('all files are exists', function () {
     it('should return all files data as per count and option', function () {
-      let organizedData = { option: 'n', count: 5, files: ['file', 'file'], reader: getLines };
+      let organizedData = { option: 'n', count: 5, files: ['file', 'file'], reader: getHeadData, separator: "\n" };
       let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5\n\n==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5';
       let actual = readFiles(organizedData, { readFileSync, existsSync } , 'head');
 
@@ -142,7 +168,7 @@ describe('readFiles', function () {
 
   describe('if a file does not exists', function () {
     it('should return error for missing file and data as per count and option for other file', function () {
-      let organizedData = { option: 'n', count: 5, files: ['file', 'abc'], reader: getLines };
+      let organizedData = { option: 'n', count: 5, files: ['file', 'abc'], reader: getHeadData, separator: "\n" };
       let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5\n' + 'head: abc: No such file or directory';
       let actual = readFiles(organizedData, { readFileSync, existsSync } , 'head');
       assert.deepEqual(actual, expectedOutput);
@@ -152,7 +178,7 @@ describe('readFiles', function () {
 
 describe('readFileContents', function () {
   it('should return the contents of file as per count and option', function () {
-    let organizedData = { option: 'n', count: 5, files: ['file',], reader: getLines };
+    let organizedData = { option: 'n', count: 5, files: ['file',], reader: getHeadData, separator: "\n"};
     let expectedOutput = 'line 1\nline 2\nline 3\nline 4\nline 5';
     let actual = readFileContents(readFileSync, 'file', organizedData);
     assert.deepEqual(actual, expectedOutput);
@@ -162,7 +188,7 @@ describe('readFileContents', function () {
 describe('getContents', function () {
 
   it('should return required data as per option and count for all valid inputs', function () {
-    let organizedData = { option: 'n', count: 4, files: ['file'], reader: getLines };
+    let organizedData = { option: 'n', count: 4, files: ['file'], reader: getHeadData, separator: "\n" };
     let expectedOutput = 'line 1\nline 2\nline 3\nline 4';
     let actual = getContents(organizedData, { readFileSync, existsSync }, 'head');
     assert.deepEqual(actual, expectedOutput);

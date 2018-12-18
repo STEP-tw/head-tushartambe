@@ -1,17 +1,13 @@
 const { errors } = require('./errors.js');
 const { parseInputs } = require('./parser.js');
 
-const getBytes = function (count, contents) {
-  return contents.split("").slice(0, count).join("");
-}
-
-const getLines = function (count, contents) {
-  return contents.split("\n").slice(0, count).join("\n");
+const getHeadData = function (count, contents, separator) {
+  return contents.split(separator).slice(0, count).join(separator);
 }
 
 const readFileContents = function (readFileSync, fileName, organizedData) {
-  const { count, reader } = organizedData;
-  return reader(count, readFileSync(fileName, 'utf8'));
+  const { count, reader, separator } = organizedData;
+  return reader(count, readFileSync(fileName, 'utf8'),separator);
 }
 
 const readFiles = function (organizedData, fs, funName) {
@@ -48,9 +44,12 @@ const getContents = function (organizedData, fs, funName) {
 
 const head = function (headData, fs) {
   let organizedData = parseInputs(headData);
-  let readerSelector = { 'c': getBytes, 'n': getLines };
-  organizedData['reader'] = readerSelector[organizedData['option']];
+  let readerSelector = { 'c': getHeadData, 'n': getHeadData };
+  let separator = { 'c': "", 'n': "\n" };
 
+  organizedData['reader'] = readerSelector[organizedData['option']];
+  organizedData['separator'] = separator[organizedData['option']];
+  
   let errorMsg = errors['head'](headData, organizedData, fs);
 
   if (errorMsg) {
@@ -60,24 +59,20 @@ const head = function (headData, fs) {
   return getContents(organizedData, fs, 'head');
 }
 
-const getTailBytes = function (count, contents) {
+const getTailData = function (count, contents, separator) {
   if(count == 0){
     return "";
   }
-  return contents.split("").slice(-count).join("");
-}
-
-const getTailLines = function (count, contents) {
-  if(count == 0){
-    return "";
-  }
-  return contents.split("\n").slice(-count).join("\n");
+  return contents.split(separator).slice(-count).join(separator);
 }
 
 const tail = function (tailData, fs) {
   let organizedData = parseInputs(tailData);
-  let readerSelector = { 'c': getTailBytes, 'n': getTailLines };
+  let readerSelector = { 'c': getTailData, 'n': getTailData };
+  let separator = { 'c': "", 'n': "\n" };
+
   organizedData['reader'] = readerSelector[organizedData['option']];
+  organizedData['separator'] = separator[organizedData['option']];
 
   let errorMsg = errors['tail'](tailData, organizedData, fs);
 
@@ -90,10 +85,8 @@ const tail = function (tailData, fs) {
 
 module.exports = {
   parseInputs,
-  getBytes,
-  getLines,
-  getTailBytes,
-  getTailLines,
+  getHeadData,
+  getTailData,
   readFiles,
   readFileContents,
   getContents,
