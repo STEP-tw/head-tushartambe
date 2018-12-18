@@ -31,7 +31,7 @@ const readFiles = function (organizedData, funName, fs) {
   return formatedData.join("\n");
 }
 
-const getContents = function (organizedData, fs, funName) {
+const getContents = function (organizedData, funName, fs) {
   let { readFileSync } = fs;
   let { files } = organizedData;
 
@@ -51,11 +51,7 @@ const head = function (headData, fs) {
   
   let errorMsg = errors['head'](organizedData, fs);
 
-  if (errorMsg) {
-    return errorMsg;
-  }
-
-  return getContents(organizedData, fs, 'head');
+  return errorMsg || getContents(organizedData, 'head', fs);
 }
 
 const getTailData = function (count, contents, separator) {
@@ -74,11 +70,7 @@ const tail = function (tailData, fs) {
 
   let errorMsg = errors['tail'](organizedData, fs);
 
-  if (errorMsg) {
-    return errorMsg;
-  }
-
-  return getContents(organizedData, fs, 'tail');
+  return errorMsg || getContents(organizedData, 'tail', fs);
 }
 
 module.exports = {

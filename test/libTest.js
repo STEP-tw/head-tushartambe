@@ -190,7 +190,7 @@ describe('getContents', function () {
   it('should return required data as per option and count for all valid inputs', function () {
     let organizedData = { option: 'n', count: 4, files: ['file'], reader: getHeadData, separator: "\n" };
     let expectedOutput = 'line 1\nline 2\nline 3\nline 4';
-    let actual = getContents(organizedData, { readFileSync, existsSync }, 'head');
+    let actual = getContents(organizedData, 'head', { readFileSync, existsSync });
     assert.deepEqual(actual, expectedOutput);
   });
 });
