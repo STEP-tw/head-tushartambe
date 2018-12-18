@@ -5,12 +5,12 @@ const getHeadData = function (count, contents, separator) {
   return contents.split(separator).slice(0, count).join(separator);
 }
 
-const readFileContents = function (readFileSync, fileName, organizedData) {
+const readFileContents = function (fileName, organizedData, readFileSync) {
   const { count, reader, separator } = organizedData;
   return reader(count, readFileSync(fileName, 'utf8'),separator);
 }
 
-const readFiles = function (organizedData, fs, funName) {
+const readFiles = function (organizedData, funName, fs) {
   let { readFileSync, existsSync } = fs;
 
   let { files } = organizedData;
@@ -22,7 +22,7 @@ const readFiles = function (organizedData, fs, funName) {
 
     if (existsSync(files[counter])) {
       fileData = delimeter + '==> ' + files[counter] + ' <==' + '\n';
-      fileData += readFileContents(readFileSync, files[counter], organizedData);
+      fileData += readFileContents(files[counter], organizedData, readFileSync);
       delimeter = "\n";
     }
     formatedData.push(fileData);
@@ -36,10 +36,10 @@ const getContents = function (organizedData, fs, funName) {
   let { files } = organizedData;
 
   if (files.length == 1) {
-    return readFileContents(readFileSync, files[0], organizedData);
+    return readFileContents(files[0], organizedData, readFileSync);
   }
 
-  return readFiles(organizedData, fs, funName);
+  return readFiles(organizedData, funName, fs);
 }
 
 const head = function (headData, fs) {

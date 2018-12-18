@@ -160,7 +160,7 @@ describe('readFiles', function () {
     it('should return all files data as per count and option', function () {
       let organizedData = { option: 'n', count: 5, files: ['file', 'file'], reader: getHeadData, separator: "\n" };
       let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5\n\n==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5';
-      let actual = readFiles(organizedData, { readFileSync, existsSync } , 'head');
+      let actual = readFiles(organizedData, 'head', { readFileSync, existsSync });
 
       assert.deepEqual(actual, expectedOutput);
     });
@@ -170,7 +170,7 @@ describe('readFiles', function () {
     it('should return error for missing file and data as per count and option for other file', function () {
       let organizedData = { option: 'n', count: 5, files: ['file', 'abc'], reader: getHeadData, separator: "\n" };
       let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5\n' + 'head: abc: No such file or directory';
-      let actual = readFiles(organizedData, { readFileSync, existsSync } , 'head');
+      let actual = readFiles(organizedData, 'head', { readFileSync, existsSync } );
       assert.deepEqual(actual, expectedOutput);
     });
   });
@@ -180,7 +180,7 @@ describe('readFileContents', function () {
   it('should return the contents of file as per count and option', function () {
     let organizedData = { option: 'n', count: 5, files: ['file',], reader: getHeadData, separator: "\n"};
     let expectedOutput = 'line 1\nline 2\nline 3\nline 4\nline 5';
-    let actual = readFileContents(readFileSync, 'file', organizedData);
+    let actual = readFileContents('file', organizedData, readFileSync);
     assert.deepEqual(actual, expectedOutput);
   });
 });
