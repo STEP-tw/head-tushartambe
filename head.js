@@ -13,13 +13,12 @@
   node ./head.js -c5 file1 file2
   node ./head.js -c 5 file1 file2
 */
-const fileReader = require('fs').readFileSync;
-const isFileExists = require('fs').existsSync;
+const fs = require('fs');
 const { head } = require('./src/lib.js');
 
 const main = function(usrInputs) {
   let headData = usrInputs.slice(2);
-  console.log(head(headData, fileReader, isFileExists))
+  console.log(head(headData, fs))
 }
 
 main(process.argv);

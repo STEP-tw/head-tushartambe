@@ -13,7 +13,8 @@ const isInvalidTailCount = function (count) {
 }
 
 const errors = {
-  head: function (headData, organizedData, isFileExists) {
+  head: function (headData, organizedData, fs) {
+    let { existsSync } = fs;
     let { count, files, option } = organizedData;
 
     if (isZero(headData[0]) || isZero(count)) {
@@ -29,11 +30,12 @@ const errors = {
       return (option == 'n') ? 'head: illegal line count -- ' + headData[0].slice(2) : 'head: illegal byte count -- ' + headData[0].slice(2);
     }
 
-    if (files.length == 1 && !isFileExists(files[0])) {
+    if (files.length == 1 && !existsSync(files[0])) {
       return 'head: ' + files[0] + ': No such file or directory';
     }
   },
-  tail: function (tailData, organizedData, isFileExists) {
+  tail: function (tailData, organizedData, fs) {
+    let { existsSync } = fs;
     let { count, files } = organizedData;
 
     if (isInvalidOption(tailData[0])) {
@@ -45,7 +47,7 @@ const errors = {
       return 'tail: illegal offset -- ' + tailData[0].slice(2);
     }
 
-    if (files.length == 1 && !isFileExists(files[0])) {
+    if (files.length == 1 && !existsSync(files[0])) {
       return 'tail: ' + files[0] + ': No such file or directory';
     }
   }

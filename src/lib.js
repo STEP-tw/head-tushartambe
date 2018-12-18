@@ -9,12 +9,14 @@ const getLines = function (count, contents) {
   return contents.split("\n").slice(0, count).join("\n");
 }
 
-const readFileContents = function (fileReader, fileName, organizedData) {
+const readFileContents = function (readFileSync, fileName, organizedData) {
   const { count, reader } = organizedData;
-  return reader(count, fileReader(fileName, 'utf8'));
+  return reader(count, readFileSync(fileName, 'utf8'));
 }
 
-const readFiles = function (organizedData, fileReader, isFileExists, funName) {
+const readFiles = function (organizedData, fs, funName) {
+  let { readFileSync, existsSync } = fs;
+
   let { files } = organizedData;
   let formatedData = [];
   let delimeter = "";
@@ -22,9 +24,9 @@ const readFiles = function (organizedData, fileReader, isFileExists, funName) {
   for (let counter = 0; counter < files.length; counter++) {
     let fileData = funName + ': ' + files[counter] + ': No such file or directory';
 
-    if (isFileExists(files[counter])) {
+    if (existsSync(files[counter])) {
       fileData = delimeter + '==> ' + files[counter] + ' <==' + '\n';
-      fileData += readFileContents(fileReader, files[counter], organizedData);
+      fileData += readFileContents(readFileSync, files[counter], organizedData);
       delimeter = "\n";
     }
     formatedData.push(fileData);
@@ -33,28 +35,29 @@ const readFiles = function (organizedData, fileReader, isFileExists, funName) {
   return formatedData.join("\n");
 }
 
-const getContents = function (organizedData, fileReader, isFileExists, funName) {
+const getContents = function (organizedData, fs, funName) {
+  let { readFileSync } = fs;
   let { files } = organizedData;
 
   if (files.length == 1) {
-    return readFileContents(fileReader, files[0], organizedData);
+    return readFileContents(readFileSync, files[0], organizedData);
   }
 
-  return readFiles(organizedData, fileReader, isFileExists, funName);
+  return readFiles(organizedData, fs, funName);
 }
 
-const head = function (headData, fileReader, isFileExists) {
+const head = function (headData, fs) {
   let organizedData = parseInputs(headData);
   let readerSelector = { 'c': getBytes, 'n': getLines };
   organizedData['reader'] = readerSelector[organizedData['option']];
 
-  let errorMsg = errors['head'](headData, organizedData, isFileExists);
+  let errorMsg = errors['head'](headData, organizedData, fs);
 
-  if (errorMsg ) {
-    return errors['head'](headData, organizedData, isFileExists);
+  if (errorMsg) {
+    return errorMsg;
   }
 
-  return getContents(organizedData, fileReader, isFileExists, 'head');
+  return getContents(organizedData, fs, 'head');
 }
 
 const getTailBytes = function (count, contents) {
@@ -71,7 +74,7 @@ const getTailLines = function (count, contents) {
   return contents.split("\n").slice(-count).join("\n");
 }
 
-const tail = function (tailData, fileReader, isFileExists) {
+const tail = function (tailData, fs) {
   let organizedData = parseInputs(tailData);
   let readerSelector = { 'c': getTailBytes, 'n': getTailLines };
   organizedData['reader'] = readerSelector[organizedData['option']];
@@ -82,13 +85,13 @@ const tail = function (tailData, fileReader, isFileExists) {
     return '';
   }
 
-  let errorMsg = errors['tail'](tailData, organizedData, isFileExists);
+  let errorMsg = errors['tail'](tailData, organizedData, fs);
 
   if (errorMsg) {
-    return errors['tail'](tailData, organizedData, isFileExists);
+    return errorMsg;
   }
 
-  return getContents(organizedData, fileReader, isFileExists, 'tail');
+  return getContents(organizedData, fs, 'tail');
 }
 
 module.exports = {
