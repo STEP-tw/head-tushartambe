@@ -79,12 +79,6 @@ const tail = function (tailData, fs) {
   let readerSelector = { 'c': getTailBytes, 'n': getTailLines };
   organizedData['reader'] = readerSelector[organizedData['option']];
 
-  const isZero = input => input == 0;
-
-  if (isZero(tailData[0]) || isZero(organizedData.count)) {
-    return '';
-  }
-
   let errorMsg = errors['tail'](tailData, organizedData, fs);
 
   if (errorMsg) {
