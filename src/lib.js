@@ -10,23 +10,30 @@ const readFileContents = function (fileName, organizedData, readFileSync) {
   return reader(count, readFileSync(fileName, 'utf8'),separator);
 }
 
-const readFiles = function (organizedData, funName, fs) {
+const createHeading = function(name) {
+  return '==> ' + name + ' <==';
+}
+
+const fileNotExistsError = function(funName, fileName) {
+  return funName + ': ' + fileName + ': No such file or directory';
+}
+
+const dataFetcher = function(organizedData, funName, fs) {
+  let delimeter = '';
   let { readFileSync, existsSync } = fs;
-
-  let { files } = organizedData;
-  let formatedData = [];
-  let delimeter = "";
-
-  for (let counter = 0; counter < files.length; counter++) {
-    let fileData = funName + ': ' + files[counter] + ': No such file or directory';
-
-    if (existsSync(files[counter])) {
-      fileData = delimeter + '==> ' + files[counter] + ' <==' + '\n';
-      fileData += readFileContents(files[counter], organizedData, readFileSync);
-      delimeter = "\n";
+  return function(file) {
+    if(existsSync(file)) {
+      let result =  delimeter+createHeading(file) + "\n" + readFileContents(file, organizedData, readFileSync);
+      delimeter = '\n';
+      return result;
     }
-    formatedData.push(fileData);
+    return fileNotExistsError(funName,file);
   }
+}
+
+const readFiles = function (organizedData, funName, fs) {
+  let { files } = organizedData;
+  let formatedData = files.map(dataFetcher(organizedData, funName, fs));
 
   return formatedData.join("\n");
 }
