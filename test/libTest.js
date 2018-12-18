@@ -3,6 +3,7 @@ const {
   getHeadData,
   getTailData,
   readFiles,
+  createHeading,
   dataFetcher,
   readFileContents,
   getContents,
@@ -152,6 +153,19 @@ describe('getTailData with separator "\n" ', function () {
       let actual = getTailData(5, 'line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8', "\n");
       assert.deepEqual(actual, expectedOutput);
     });
+  });
+});
+
+describe('createHeading', function () {
+  it('should return heading for that given name', function () {
+    let expectedOutput = '==> ' + 'file' + ' <==';
+    let actual = createHeading('file');
+    assert.deepEqual(actual, expectedOutput);
+  });
+  it('should return heading for that given number', function () {
+    let expectedOutput = '==> ' + 10 + ' <==';
+    let actual = createHeading(10);
+    assert.deepEqual(actual, expectedOutput);
   });
 });
 

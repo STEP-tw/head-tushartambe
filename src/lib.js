@@ -14,10 +14,6 @@ const createHeading = function(name) {
   return '==> ' + name + ' <==';
 }
 
-const fileNotExistsError = function(funName, fileName) {
-  return funName + ': ' + fileName + ': No such file or directory';
-}
-
 const dataFetcher = function(organizedData, funName, fs) {
   let delimeter = '';
   let { readFileSync, existsSync } = fs;
@@ -27,7 +23,7 @@ const dataFetcher = function(organizedData, funName, fs) {
       delimeter = '\n';
       return result;
     }
-    return fileNotExistsError(funName,file);
+    return funName + ': ' + file + ': No such file or directory';
   }
 }
 
@@ -86,6 +82,7 @@ module.exports = {
   getHeadData,
   getTailData,
   readFiles,
+  createHeading,
   dataFetcher,
   readFileContents,
   getContents,
