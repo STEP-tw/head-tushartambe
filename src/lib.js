@@ -44,11 +44,10 @@ const getContents = function (organizedData, fs, funName) {
 
 const head = function (headData, fs) {
   let organizedData = parseInputs(headData);
-  let readerSelector = { 'c': getHeadData, 'n': getHeadData };
   let separator = { 'c': "", 'n': "\n" };
 
-  organizedData['reader'] = readerSelector[organizedData['option']];
   organizedData['separator'] = separator[organizedData['option']];
+  organizedData['reader'] = getHeadData;
   
   let errorMsg = errors['head'](headData, organizedData, fs);
 
@@ -68,11 +67,10 @@ const getTailData = function (count, contents, separator) {
 
 const tail = function (tailData, fs) {
   let organizedData = parseInputs(tailData);
-  let readerSelector = { 'c': getTailData, 'n': getTailData };
   let separator = { 'c': "", 'n': "\n" };
 
-  organizedData['reader'] = readerSelector[organizedData['option']];
   organizedData['separator'] = separator[organizedData['option']];
+  organizedData['reader'] = getTailData;
 
   let errorMsg = errors['tail'](tailData, organizedData, fs);
 
