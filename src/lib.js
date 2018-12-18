@@ -49,7 +49,7 @@ const head = function (headData, fs) {
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getHeadData;
   
-  let errorMsg = errors['head'](headData, organizedData, fs);
+  let errorMsg = errors['head'](organizedData, fs);
 
   if (errorMsg) {
     return errorMsg;
@@ -72,7 +72,7 @@ const tail = function (tailData, fs) {
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getTailData;
 
-  let errorMsg = errors['tail'](tailData, organizedData, fs);
+  let errorMsg = errors['tail'](organizedData, fs);
 
   if (errorMsg) {
     return errorMsg;
