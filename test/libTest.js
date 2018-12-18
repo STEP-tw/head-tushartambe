@@ -3,6 +3,7 @@ const {
   getHeadData,
   getTailData,
   readFiles,
+  dataFetcher,
   readFileContents,
   getContents,
   tail,
@@ -154,9 +155,29 @@ describe('getTailData with separator "\n" ', function () {
   });
 });
 
+describe('dataFetcher', function () {
+  describe('for all files are exists', function () {
+    it('should return all files data as per count and option', function () {
+      let organizedData = { option: 'n', count: 5, files: ['file'], reader: getHeadData, separator: "\n" };
+      let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5';
+      let actual = dataFetcher(organizedData, 'head', { readFileSync, existsSync })('file');
+
+      assert.deepEqual(actual, expectedOutput);
+    });
+  });
+
+  describe('if a file does not exists', function () {
+    it('should return error for missing file and data as per count and option for other file', function () {
+      let organizedData = { option: 'n', count: 5, files: ['abc'], reader: getHeadData, separator: "\n" };
+      let expectedOutput = 'head: abc: No such file or directory';
+      let actual = dataFetcher(organizedData, 'head', { readFileSync, existsSync } )('abc');
+      assert.deepEqual(actual, expectedOutput);
+    });
+  });
+});
 
 describe('readFiles', function () {
-  describe('all files are exists', function () {
+  describe('for all files are exists', function () {
     it('should return all files data as per count and option', function () {
       let organizedData = { option: 'n', count: 5, files: ['file', 'file'], reader: getHeadData, separator: "\n" };
       let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5\n\n==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5';
