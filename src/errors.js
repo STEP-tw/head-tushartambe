@@ -1,5 +1,5 @@
 const isInvalidOption = function (givenOption) {
-  let validOptios  = [ 'c', 'n' ];
+  let validOptios = ['c', 'n'];
   return !validOptios.includes(givenOption);
 }
 
@@ -11,39 +11,65 @@ const isInvalidTailCount = function (count) {
   return isNaN(count) || count < 0;
 }
 
+const invalidOptionError = function (option,opertaion) {
+  let error = {
+    head: 'head: illegal option -- ' + option + '\nusage: head [-n lines | -c bytes] [file ...]',
+    tail: 'tail: illegal option -- ' + option + '\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]'
+  };
+
+  return error[opertaion]
+}
+
+const invalidCountError = function(count,option, operation) {
+  let error = {
+    head: {
+      n: 'head: illegal line count -- ' + count,
+      c: 'head: illegal byte count -- ' + count
+    },
+    tail: {
+      n: 'tail: illegal offset -- ' + count,
+      c: 'tail: illegal offset -- ' + count
+    }
+  }
+  return error[operation][option];
+}
+
+const fileNotExistsError = function(file, operation) {
+  return operation + ': ' + file + ': No such file or directory';
+}
+
 const errors = {
-  head: function (organizedData, fs) {
+  head: function (organizedData, operation, fs) {
     let { existsSync } = fs;
     let { count, files, option } = organizedData;
+    console.log(option); 
 
     if (isInvalidOption(option)) {
-      let errorMsg = 'head: illegal option -- ' + option + '\nusage: head [-n lines | -c bytes] [file ...]';
-      return errorMsg;
+      return invalidOptionError(option, operation);
     }
 
     if (isInvalidHeadCount(count)) {
-      return (option == 'n') ? 'head: illegal line count -- ' + count : 'head: illegal byte count -- ' + count;
+      return invalidCountError(count, option, operation);
     }
 
     if (files.length == 1 && !existsSync(files[0])) {
-      return 'head: ' + files[0] + ': No such file or directory';
+      return fileNotExistsError(files[0], operation)
     }
   },
-  tail: function (organizedData, fs) {
+  tail: function (organizedData, operation, fs) {
     let { existsSync } = fs;
     let { count, files, option } = organizedData;
 
     if (isInvalidOption(option)) {
-      let errorMsg = 'tail: illegal option -- ' + option + '\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
-      return errorMsg;
+      return invalidOptionError(option, operation);
     }
 
     if (isInvalidTailCount(count)) {
-      return 'tail: illegal offset -- ' + count;
+      return invalidCountError(count, option, operation);
     }
 
     if (files.length == 1 && !existsSync(files[0])) {
-      return 'tail: ' + files[0] + ': No such file or directory';
+      return fileNotExistsError(files[0], operation)
     }
   }
 }

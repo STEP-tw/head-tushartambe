@@ -52,7 +52,7 @@ const head = function (headData, fs) {
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getHeadData;
   
-  let errorMsg = errors['head'](organizedData, fs);
+  let errorMsg = errors["head"](organizedData, "head", fs);
 
   return errorMsg || getContents(organizedData, 'head', fs);
 }
@@ -71,9 +71,9 @@ const tail = function (tailData, fs) {
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getTailData;
 
-  let errorMsg = errors['tail'](organizedData, fs);
+  let errorMsg = errors["tail"](organizedData, "tail", fs);
 
-  return errorMsg || getContents(organizedData, 'tail', fs);
+  return errorMsg || getContents(organizedData, "tail", fs);
 }
 
 module.exports = {
