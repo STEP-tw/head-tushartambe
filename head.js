@@ -16,7 +16,7 @@
 const fs = require('fs');
 const { head } = require('./src/lib.js');
 
-const main = function(usrInputs) {
+const main = function (usrInputs) {
   let headData = usrInputs.slice(2);
   console.log(head(headData, fs))
 }

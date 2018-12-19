@@ -7,19 +7,19 @@ const getHeadData = function (count, contents, separator) {
 
 const readFileContents = function (fileName, organizedData, readFileSync) {
   const { count, reader, separator } = organizedData;
-  return reader(count, readFileSync(fileName, 'utf8'),separator);
+  return reader(count, readFileSync(fileName, 'utf8'), separator);
 }
 
-const createHeading = function(name) {
+const createHeading = function (name) {
   return '==> ' + name + ' <==';
 }
 
-const dataFetcher = function(organizedData, functionName, fs) {
+const dataFetcher = function (organizedData, functionName, fs) {
   let delimeter = '';
   let { readFileSync, existsSync } = fs;
-  return function(file) {
-    if(existsSync(file)) {
-      let result =  delimeter+createHeading(file) + "\n" + readFileContents(file, organizedData, readFileSync);
+  return function (file) {
+    if (existsSync(file)) {
+      let result = delimeter + createHeading(file) + "\n" + readFileContents(file, organizedData, readFileSync);
       delimeter = '\n';
       return result;
     }
@@ -51,14 +51,14 @@ const head = function (headData, fs) {
 
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getHeadData;
-  
+
   let errorMsg = handleErrors(organizedData, "head", fs);
 
   return errorMsg || getContents(organizedData, 'head', fs);
 }
 
 const getTailData = function (count, contents, separator) {
-  if(count == 0){
+  if (count == 0) {
     return "";
   }
   return contents.split(separator).slice(-count).join(separator);

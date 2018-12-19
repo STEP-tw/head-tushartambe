@@ -46,7 +46,7 @@ describe('getHeadData with separator "" ', function () {
   describe('for 0 count value', function () {
     it('should empty value', function () {
       let expectedOutput = '';
-      let actual = getHeadData(0, 'line 1\nline 2\nline 3\nline 4\nline 5\nline','');
+      let actual = getHeadData(0, 'line 1\nline 2\nline 3\nline 4\nline 5\nline', '');
       assert.deepEqual(actual, expectedOutput);
     });
   });
@@ -184,7 +184,7 @@ describe('dataFetcher', function () {
     it('should return error for missing file and data as per count and option for other file', function () {
       let organizedData = { option: 'n', count: 5, files: ['abc'], reader: getHeadData, separator: "\n" };
       let expectedOutput = 'head: abc: No such file or directory';
-      let actual = dataFetcher(organizedData, 'head', { readFileSync, existsSync } )('abc');
+      let actual = dataFetcher(organizedData, 'head', { readFileSync, existsSync })('abc');
       assert.deepEqual(actual, expectedOutput);
     });
   });
@@ -205,7 +205,7 @@ describe('readFiles', function () {
     it('should return error for missing file and data as per count and option for other file', function () {
       let organizedData = { option: 'n', count: 5, files: ['file', 'abc'], reader: getHeadData, separator: "\n" };
       let expectedOutput = '==> file <==\nline 1\nline 2\nline 3\nline 4\nline 5\n' + 'head: abc: No such file or directory';
-      let actual = readFiles(organizedData, 'head', { readFileSync, existsSync } );
+      let actual = readFiles(organizedData, 'head', { readFileSync, existsSync });
       assert.deepEqual(actual, expectedOutput);
     });
   });
@@ -213,7 +213,7 @@ describe('readFiles', function () {
 
 describe('readFileContents', function () {
   it('should return the contents of file as per count and option', function () {
-    let organizedData = { option: 'n', count: 5, files: ['file',], reader: getHeadData, separator: "\n"};
+    let organizedData = { option: 'n', count: 5, files: ['file',], reader: getHeadData, separator: "\n" };
     let expectedOutput = 'line 1\nline 2\nline 3\nline 4\nline 5';
     let actual = readFileContents('file', organizedData, readFileSync);
     assert.deepEqual(actual, expectedOutput);
@@ -468,10 +468,10 @@ describe('tail with single file', function () {
     it('should return last given number of lines', function () {
       let givenCmdLineArgs = ['-5', 'file'];
       let lines = ['line 7',
-      'line 8',
-      'line 9',
-      'line 10',
-      'line 11'];
+        'line 8',
+        'line 9',
+        'line 10',
+        'line 11'];
       let expectedOutput = lines.join("\n");
       let actual = tail(givenCmdLineArgs, { readFileSync, existsSync });
       assert.deepEqual(actual, expectedOutput);
@@ -486,7 +486,7 @@ describe('tail with single file', function () {
       assert.deepEqual(actual, expectedOutput);
 
       givenCmdLineArgs = ['-c8', 'file'];
-      expectedOutput = '\nline 11';      
+      expectedOutput = '\nline 11';
       actual = tail(givenCmdLineArgs, { readFileSync, existsSync });
       assert.deepEqual(actual, expectedOutput);
     });
@@ -500,7 +500,7 @@ describe('tail with single file', function () {
       assert.deepEqual(actual, expectedOutput);
 
       givenCmdLineArgs = ['-c', '8', 'file'];
-      expectedOutput = '\nline 11';      
+      expectedOutput = '\nline 11';
       actual = tail(givenCmdLineArgs, { readFileSync, existsSync });
       assert.deepEqual(actual, expectedOutput);
     });
@@ -519,7 +519,7 @@ describe('tail', function () {
     it('should return error when invalid option is speciified', function () {
       let expectedOutput = 'tail: illegal option -- z'
       expectedOutput += '\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]';
-      let actual =  tail(["-z", "file1"], { readFileSync, existsSync });
+      let actual = tail(["-z", "file1"], { readFileSync, existsSync });
       assert.deepEqual(actual, expectedOutput);
     });
 
