@@ -1,5 +1,3 @@
-const isZero = input => input == 0;
-
 const isInvalidOption = function (givenOption) {
   let validOptios  = [ 'c', 'n' ];
   return !validOptios.includes(givenOption);
@@ -17,10 +15,6 @@ const errors = {
   head: function (organizedData, fs) {
     let { existsSync } = fs;
     let { count, files, option } = organizedData;
-
-    if (isZero(count)) {
-      return 'head: illegal line count -- 0';
-    }
 
     if (isInvalidOption(option)) {
       let errorMsg = 'head: illegal option -- ' + option + '\nusage: head [-n lines | -c bytes] [file ...]';

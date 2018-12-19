@@ -31,7 +31,6 @@ const readFiles = function (organizedData, funName, fs) {
   let { files } = organizedData;
   let formatedData = files.map(dataFetcher(organizedData, funName, fs));
 
-  console.log(formatedData); 
   return formatedData.join("\n");
 }
 
