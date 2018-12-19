@@ -1,4 +1,4 @@
-const { errors } = require('./errors.js');
+const { handleErrors } = require('./errors.js');
 const { parseInputs } = require('./parser.js');
 
 const getHeadData = function (count, contents, separator) {
@@ -14,7 +14,7 @@ const createHeading = function(name) {
   return '==> ' + name + ' <==';
 }
 
-const dataFetcher = function(organizedData, funName, fs) {
+const dataFetcher = function(organizedData, functionName, fs) {
   let delimeter = '';
   let { readFileSync, existsSync } = fs;
   return function(file) {
@@ -23,18 +23,18 @@ const dataFetcher = function(organizedData, funName, fs) {
       delimeter = '\n';
       return result;
     }
-    return funName + ': ' + file + ': No such file or directory';
+    return functionName + ': ' + file + ': No such file or directory';
   }
 }
 
-const readFiles = function (organizedData, funName, fs) {
+const readFiles = function (organizedData, functionName, fs) {
   let { files } = organizedData;
-  let formatedData = files.map(dataFetcher(organizedData, funName, fs));
+  let formatedData = files.map(dataFetcher(organizedData, functionName, fs));
 
   return formatedData.join("\n");
 }
 
-const getContents = function (organizedData, funName, fs) {
+const getContents = function (organizedData, functionName, fs) {
   let { readFileSync } = fs;
   let { files } = organizedData;
 
@@ -42,7 +42,7 @@ const getContents = function (organizedData, funName, fs) {
     return readFileContents(files[0], organizedData, readFileSync);
   }
 
-  return readFiles(organizedData, funName, fs);
+  return readFiles(organizedData, functionName, fs);
 }
 
 const head = function (headData, fs) {
@@ -52,7 +52,7 @@ const head = function (headData, fs) {
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getHeadData;
   
-  let errorMsg = errors["head"](organizedData, "head", fs);
+  let errorMsg = handleErrors(organizedData, "head", fs);
 
   return errorMsg || getContents(organizedData, 'head', fs);
 }
@@ -71,7 +71,7 @@ const tail = function (tailData, fs) {
   organizedData['separator'] = separator[organizedData['option']];
   organizedData['reader'] = getTailData;
 
-  let errorMsg = errors["tail"](organizedData, "tail", fs);
+  let errorMsg = handleErrors(organizedData, "tail", fs);
 
   return errorMsg || getContents(organizedData, "tail", fs);
 }
