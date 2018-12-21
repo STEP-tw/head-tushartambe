@@ -45,18 +45,6 @@ const getContents = function (organizedData, functionName, fs) {
   return readFiles(organizedData, functionName, fs);
 }
 
-const head = function (headData, fs) {
-  let organizedData = parseInputs(headData);
-  let separator = { 'c': "", 'n': "\n" };
-
-  organizedData['separator'] = separator[organizedData['option']];
-  organizedData['reader'] = getHeadData;
-
-  let errorMsg = handleErrors(organizedData, "head", fs);
-
-  return errorMsg || getContents(organizedData, 'head', fs);
-}
-
 const getTailData = function (count, contents, separator) {
   if (count == 0) {
     return "";
@@ -64,17 +52,26 @@ const getTailData = function (count, contents, separator) {
   return contents.split(separator).slice(-count).join(separator);
 }
 
-const tail = function (tailData, fs) {
-  let organizedData = parseInputs(tailData);
+const getReaderFunction = {
+  head: getHeadData,
+  tail: getTailData
+};
+
+const getUtility = function (utility, inputForUtility, fs) {
+  let organizedData = parseInputs(inputForUtility);
   let separator = { 'c': "", 'n': "\n" };
 
   organizedData['separator'] = separator[organizedData['option']];
-  organizedData['reader'] = getTailData;
+  organizedData['reader'] = getReaderFunction[utility];
 
-  let errorMsg = handleErrors(organizedData, "tail", fs);
+  let errorMsg = handleErrors(organizedData, utility, fs);
 
-  return errorMsg || getContents(organizedData, "tail", fs);
+  return errorMsg || getContents(organizedData, utility, fs);
 }
+
+const tail = getUtility.bind(null, "tail");
+
+const head = getUtility.bind(null, "head");
 
 module.exports = {
   parseInputs,
